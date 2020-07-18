@@ -13,4 +13,5 @@ Then("I see an empty day screen", () => {
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
   cy.get("[data-testid=selected-date]");
+  cy.get("[data-testid=empty-habit-list]");
 });

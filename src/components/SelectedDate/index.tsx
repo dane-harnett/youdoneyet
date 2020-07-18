@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Typography } from "@material-ui/core";
 
 export const SelectedDate = () => (
-  <Typography variant="h6" data-testid="selected-date">
+  <Typography align="center" variant="h6" data-testid="selected-date">
     {format(new Date(), "EEEE, d LLLL yyyy")}
   </Typography>
 );

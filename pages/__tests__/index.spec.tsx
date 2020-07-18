@@ -29,4 +29,8 @@ describe("Day screen", () => {
       format(new Date(), "EEEE, d LLLL yyyy")
     );
   });
+  it("contains the empty habit list", () => {
+    const { getByTestId } = render(<IndexPage />);
+    getByTestId("empty-habit-list");
+  });
 });
