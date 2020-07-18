@@ -1,12 +1,16 @@
+import React from "react";
 import dynamic from "next/dynamic";
-import Button from "@material-ui/core/Button";
+import AppHeader from "../src/components/AppHeader";
+import NavigationTabs from "../src/components/NavigationTabs";
+import SelectedDate from "../src/components/SelectedDate";
+import EmptyHabitList from "../src/components/EmptyHabitList";
 
-const IndexPage = () => (
-  <div>
-    You Done Yet
-    <Button variant="contained" color="primary">
-      Primary
-    </Button>
+export const IndexPage = () => (
+  <div data-testid="day-screen">
+    <AppHeader />
+    <NavigationTabs />
+    <SelectedDate />
+    <EmptyHabitList />
   </div>
 );
 
