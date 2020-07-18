@@ -5,7 +5,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@apollo/client": "^3.0.0",
@@ -21,6 +22,7 @@
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
+    "cypress-cucumber-preprocessor": "^2.5.3",
     "jest": "^26.1.0",
     "typescript": "3.7.3"
   },
