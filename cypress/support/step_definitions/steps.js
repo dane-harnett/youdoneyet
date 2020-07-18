@@ -11,4 +11,6 @@ When("I navigate to the day screen", () => {
 Then("I see an empty day screen", () => {
   cy.get("[data-testid=day-screen]");
   cy.get("[data-testid=app-header]");
+  cy.get("[data-testid=navigation-tabs]");
+  cy.get("[data-testid=selected-date]");
 });
