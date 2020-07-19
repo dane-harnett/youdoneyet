@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { IndexPage } from "../index";
 
 describe("Day screen", () => {
-  it("can be targeted by cypress", () => {
+  it("can be targeted by tests", () => {
     const { getByTestId } = render(<IndexPage />);
     getByTestId("day-screen");
   });
