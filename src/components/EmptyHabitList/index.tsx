@@ -10,8 +10,10 @@ import {
   Link,
 } from "@material-ui/core";
 
-export const EmptyHabitList = () => {
+export const EmptyHabitList = ({ setHabitList }) => {
   const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [goal, setGoal] = useState(1);
   return (
     <div data-testid="empty-habit-list">
       <Typography data-testid="prompt" align="center" variant="body1">
@@ -45,6 +47,8 @@ export const EmptyHabitList = () => {
             label="Name"
             type="text"
             fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             data-testid="name-field"
           />
           <TextField
@@ -53,6 +57,8 @@ export const EmptyHabitList = () => {
             label="Goal"
             type="number"
             fullWidth
+            value={goal}
+            onChange={(e) => setGoal(parseInt(e.target.value, 10))}
             data-testid="goal-field"
           />
         </DialogContent>
@@ -67,7 +73,10 @@ export const EmptyHabitList = () => {
             Cancel
           </Button>
           <Button
-            onClick={() => {}}
+            onClick={() => {
+              setOpen(false);
+              setHabitList([{ name, goal }]);
+            }}
             color="primary"
             variant="contained"
             data-testid="create-button"
