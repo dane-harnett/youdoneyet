@@ -9,8 +9,16 @@ import {
   Typography,
   Link,
 } from "@material-ui/core";
+interface Habit {
+  name: string;
+  goal: number;
+}
 
-export const EmptyHabitList = ({ setHabitList }) => {
+export const EmptyHabitList = ({
+  setHabitList = () => {},
+}: {
+  setHabitList?: (habitList: Array<Habit>) => void;
+}) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [goal, setGoal] = useState(1);
