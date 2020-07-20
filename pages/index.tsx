@@ -5,8 +5,13 @@ import NavigationTabs from "../src/components/NavigationTabs";
 import SelectedDate from "../src/components/SelectedDate";
 import EmptyHabitList from "../src/components/EmptyHabitList";
 
+interface Habit {
+  name: string;
+  goal: number;
+}
+
 export const IndexPage = () => {
-  const [habitList, setHabitList] = useState([]);
+  const [habitList, setHabitList] = useState<Array<Habit>>([]);
   return (
     <div data-testid="day-screen">
       <AppHeader />
