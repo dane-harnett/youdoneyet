@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { gql, useApolloClient, useQuery } from "@apollo/client";
 import dynamic from "next/dynamic";
 import AppHeader from "../src/components/AppHeader";
 import NavigationTabs from "../src/components/NavigationTabs";
@@ -10,18 +11,39 @@ interface Habit {
   goal: number;
 }
 
+export const HABITS_QUERY = gql`
+  query {
+    habits @client {
+      name
+      goal
+    }
+  }
+`;
+
 export const IndexPage = () => {
-  const [habitList, setHabitList] = useState<Array<Habit>>([]);
+  const apolloClient = useApolloClient();
+  const { data, loading } = useQuery(HABITS_QUERY);
+
+  // refactor into a hook so we can stub in unit tests
+  // const [setHabitList] = useHabitList();
+
+  const setHabitList = (habitList: Array<Habit>) => {
+    window.localStorage.setItem("habits", JSON.stringify(habitList));
+    apolloClient.cache.evict({ fieldName: "habits" });
+  };
+
   return (
     <div data-testid="day-screen">
       <AppHeader />
       <NavigationTabs />
       <SelectedDate />
-      {habitList.length === 0 ? (
+      {loading ? (
+        <div data-testid="loading">Loading habits...</div>
+      ) : data.habits.length === 0 ? (
         <EmptyHabitList setHabitList={setHabitList} />
       ) : (
         <div data-testid="habit-list">
-          {habitList.map(({ name, goal }) => (
+          {data.habits.map(({ name, goal }: Habit) => (
             <div>
               <div>Name: {name}</div>
               <div>Goal: {goal}</div>

@@ -1,36 +1,62 @@
 import React from "react";
 import { render } from "@testing-library/react";
+import { MockedProvider } from "@apollo/client/testing";
 import { format } from "date-fns";
 import { IndexPage } from "../index";
+import { InMemoryCache } from "@apollo/client";
 
 describe("Day screen", () => {
-  it("can be targeted by tests", () => {
-    const { getByTestId } = render(<IndexPage />);
-    getByTestId("day-screen");
+  const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          habits: {
+            read() {
+              return [];
+            },
+          },
+        },
+      },
+    },
   });
-  it("contains the app header", () => {
-    const { getByTestId } = render(<IndexPage />);
-    getByTestId("app-header");
+  const renderWithEmptyHabits = () =>
+    render(
+      <MockedProvider cache={cache} addTypename={false}>
+        <IndexPage />
+      </MockedProvider>
+    );
+
+  it("can be targeted by tests", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    await findByTestId("day-screen");
   });
-  it("contains the navigation tabs", () => {
-    const { getByTestId } = render(<IndexPage />);
-    getByTestId("navigation-tabs");
+  it("contains the app header", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    await findByTestId("app-header");
   });
-  it("day tab is selected", () => {
-    const { getByTestId } = render(<IndexPage />);
-    const dayTab = getByTestId("day-tab");
+  it("contains the navigation tabs", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    await findByTestId("navigation-tabs");
+  });
+  it("day tab is selected", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    const dayTab = await findByTestId("day-tab");
     expect(dayTab).toHaveAttribute("aria-selected", "true");
     expect(dayTab).toHaveTextContent("Day");
   });
-  it("contains the selected date", () => {
-    const { getByTestId } = render(<IndexPage />);
-    const selectedDateEl = getByTestId("selected-date");
+  it("contains the selected date", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    const selectedDateEl = await findByTestId("selected-date");
     expect(selectedDateEl).toHaveTextContent(
       format(new Date(), "EEEE, d LLLL yyyy")
     );
   });
-  it("contains the empty habit list", () => {
-    const { getByTestId } = render(<IndexPage />);
-    getByTestId("empty-habit-list");
+  it("indicates loading", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    await findByTestId("loading");
+  });
+  it("contains the empty habit list", async () => {
+    const { findByTestId } = renderWithEmptyHabits();
+    await findByTestId("empty-habit-list");
   });
 });

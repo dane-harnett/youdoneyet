@@ -8,6 +8,10 @@ When("I navigate to the day screen", () => {
   cy.visit("/");
 });
 
+When("I reload the page", () => {
+  cy.reload();
+});
+
 Then("I see the day screen", () => {
   cy.get("[data-testid=day-screen]");
   cy.get("[data-testid=app-header]");

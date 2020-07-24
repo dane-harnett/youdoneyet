@@ -8,7 +8,19 @@ import {
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
 function createApolloClient() {
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          habits: {
+            read() {
+              return JSON.parse(window.localStorage.getItem("habits") || "[]");
+            },
+          },
+        },
+      },
+    },
+  });
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     cache,
@@ -27,6 +39,5 @@ export function initializeApollo() {
 }
 
 export function useApollo() {
-  const store = useMemo(() => initializeApollo(), []);
-  return store;
+  return useMemo(() => initializeApollo(), []);
 }
