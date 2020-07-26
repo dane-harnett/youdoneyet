@@ -32,7 +32,11 @@ Then("I see the following habit list:", (dataTable) => {
 });
 
 When("I choose to create my first habit", () => {
-  cy.get("[data-testid=create-first-habit-link]").click();
+  cy.get("[data-testid=create-first-habit]").click();
+});
+
+When("I choose to create a new habit", () => {
+  cy.get("[data-testid=create-new-habit]").click();
 });
 
 Then("I see the create habit form", () => {
