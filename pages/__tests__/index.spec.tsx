@@ -1,5 +1,9 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import { format } from "date-fns";
 import { IndexPage } from "../index";
@@ -58,5 +62,27 @@ describe("Day screen", () => {
   it("contains the empty habit list", async () => {
     const { findByTestId } = renderWithEmptyHabits();
     await findByTestId("empty-habit-list");
+  });
+  it("clicking create link shows the create habit form", async () => {
+    const { findByTestId, getByTestId } = renderWithEmptyHabits();
+    const createFirstHabit = await findByTestId("create-first-habit");
+    fireEvent.click(createFirstHabit);
+    getByTestId("create-habit-form");
+    getByTestId("name-field");
+    getByTestId("goal-field");
+    getByTestId("cancel-button");
+    getByTestId("create-button");
+  });
+  it("clicking cancel button hides the create habit form", async () => {
+    const {
+      findByTestId,
+      getByTestId,
+      queryByTestId,
+    } = renderWithEmptyHabits();
+    const createFirstHabit = await findByTestId("create-first-habit");
+    fireEvent.click(createFirstHabit);
+    getByTestId("create-habit-form");
+    fireEvent.click(getByTestId("cancel-button"));
+    await waitForElementToBeRemoved(() => queryByTestId("create-habit-form"));
   });
 });
