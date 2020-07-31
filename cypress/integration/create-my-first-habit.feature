@@ -10,5 +10,5 @@ Feature: Day screen
     Then I no longer see the create habit form
     And I see the day screen
     And I see the following habit list:
-      | name             | goal |
-      | Drink more water | 4    |
+      | name             | goal | count |
+      | Drink more water | 4    | 0     |

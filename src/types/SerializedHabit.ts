@@ -1,6 +1,5 @@
-export interface Habit {
+export interface SerializedHabit {
   id: string;
   name: string;
   goal: number;
-  count: number;
 }

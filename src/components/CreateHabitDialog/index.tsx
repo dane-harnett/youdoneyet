@@ -7,8 +7,7 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-
-import { Habit } from "../../types/Habit";
+import { v4 as uuidv4 } from "uuid";
 
 export const CreateHabitDialog = ({
   onClose,
@@ -16,7 +15,7 @@ export const CreateHabitDialog = ({
   open,
 }: {
   onClose: () => void;
-  onCreate: (habit: Habit) => void;
+  onCreate: (habit: { id: string; name: string; goal: number }) => void;
   open: boolean;
 }) => {
   const [name, setName] = useState("");
@@ -67,7 +66,7 @@ export const CreateHabitDialog = ({
         <Button
           onClick={() => {
             onClose();
-            onCreate({ name, goal });
+            onCreate({ id: uuidv4(), name, goal });
           }}
           color="primary"
           variant="contained"

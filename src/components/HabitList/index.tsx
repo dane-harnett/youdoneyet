@@ -1,18 +1,21 @@
 import { gql, useApolloClient, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { makeStyles, CircularProgress, Fab } from "@material-ui/core";
+import { makeStyles, CircularProgress, Fab, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import CreateHabitDialog from "../CreateHabitDialog";
 import EmptyHabitList from "../EmptyHabitList";
 
 import { Habit } from "../../types/Habit";
+import { HabitLog } from "../../types/HabitLog";
 
 export const HABITS_QUERY = gql`
   query {
     habits @client {
+      id
       name
       goal
+      count
     }
   }
 `;
@@ -44,6 +47,16 @@ export const HabitList = () => {
   const onCreate = (habit: Habit) => {
     setHabitList(data.habits.concat([habit]));
   };
+  const onLog = (log: HabitLog) => {
+    const habitLogs = JSON.parse(
+      window.localStorage.getItem("habit_logs") || "[]"
+    );
+    window.localStorage.setItem(
+      "habit_logs",
+      JSON.stringify(habitLogs.concat(log))
+    );
+    apolloClient.cache.evict({ fieldName: "habits" });
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -58,18 +71,27 @@ export const HabitList = () => {
       ) : (
         <>
           <div data-testid="habit-list">
-            {data.habits.map(({ name, goal }: Habit) => (
-              <div>
+            {data.habits.map(({ id, name, goal, count }: Habit) => (
+              <div key={id}>
                 <div>Name: {name}</div>
                 <div>Goal: {goal}</div>
+                <div>Count: {count}</div>
+                <Button
+                  data-testid="log-button"
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => onLog({ habitId: id, count: 1 })}
+                >
+                  Log
+                </Button>
               </div>
             ))}
           </div>
           <Fab
-            classes={fabClasses}
-            data-testid="create-new-habit"
-            color="primary"
             aria-label="create-new-habit"
+            classes={fabClasses}
+            color="primary"
+            data-testid="create-new-habit"
             onClick={() => setOpen(true)}
           >
             <AddIcon />

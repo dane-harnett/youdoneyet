@@ -4,6 +4,15 @@ Given("I am yet to create any habits", () => {
   cy.clearLocalStorage();
 });
 
+Given("I have the following habits:", (dataTable) => {
+  const habits = dataTable.rawTable.slice(1).map((line) => ({
+    id: "test",
+    name: line[0],
+    goal: line[1],
+  }));
+  window.localStorage.setItem("habits", JSON.stringify(habits));
+});
+
 When("I navigate to the day screen", () => {
   cy.visit("/");
 });
@@ -28,6 +37,7 @@ Then("I see the following habit list:", (dataTable) => {
   dataTable.rawTable.slice(1).forEach((line) => {
     cy.get("[data-testid=habit-list]").contains(`Name: ${line[0]}`);
     cy.get("[data-testid=habit-list]").contains(`Goal: ${line[1]}`);
+    cy.get("[data-testid=habit-list]").contains(`Count: ${line[2] || 0}`);
   });
 });
 
@@ -65,4 +75,8 @@ When("I enter {int} for the goal", (goal) => {
 
 When("I choose to create", () => {
   cy.get("[data-testid=create-button]").click();
+});
+
+When(`I log a record for "Drink more water"`, () => {
+  cy.get("[data-testid=log-button]").click();
 });
