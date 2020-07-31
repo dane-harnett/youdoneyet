@@ -58,18 +58,18 @@ export const HabitList = () => {
       ) : (
         <>
           <div data-testid="habit-list">
-            {data.habits.map(({ name, goal }: Habit) => (
-              <div>
+            {data.habits.map(({ id, name, goal }: Habit) => (
+              <div key={id}>
                 <div>Name: {name}</div>
                 <div>Goal: {goal}</div>
               </div>
             ))}
           </div>
           <Fab
-            classes={fabClasses}
-            data-testid="create-new-habit"
-            color="primary"
             aria-label="create-new-habit"
+            classes={fabClasses}
+            color="primary"
+            data-testid="create-new-habit"
             onClick={() => setOpen(true)}
           >
             <AddIcon />
