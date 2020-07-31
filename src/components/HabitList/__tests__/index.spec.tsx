@@ -11,7 +11,7 @@ describe("Habit list", () => {
         fields: {
           habits: {
             read() {
-              return [{ id: "a-id", name: "habit name", goal: 1 }];
+              return [{ id: "a-id", name: "habit name", goal: 1, count: 0 }];
             },
           },
         },
@@ -34,5 +34,6 @@ describe("Habit list", () => {
     await findByTestId("habit-list");
     await getByText("Name: habit name");
     await getByText("Goal: 1");
+    await getByText("Count: 0");
   });
 });

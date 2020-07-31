@@ -11,8 +11,10 @@ import { Habit } from "../../types/Habit";
 export const HABITS_QUERY = gql`
   query {
     habits @client {
+      id
       name
       goal
+      count
     }
   }
 `;
@@ -58,10 +60,11 @@ export const HabitList = () => {
       ) : (
         <>
           <div data-testid="habit-list">
-            {data.habits.map(({ id, name, goal }: Habit) => (
+            {data.habits.map(({ id, name, goal, count }: Habit) => (
               <div key={id}>
                 <div>Name: {name}</div>
                 <div>Goal: {goal}</div>
+                <div>Count: {count}</div>
               </div>
             ))}
           </div>

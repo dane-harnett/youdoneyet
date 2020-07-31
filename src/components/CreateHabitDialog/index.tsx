@@ -9,15 +9,13 @@ import {
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
 
-import { Habit } from "../../types/Habit";
-
 export const CreateHabitDialog = ({
   onClose,
   onCreate,
   open,
 }: {
   onClose: () => void;
-  onCreate: (habit: Habit) => void;
+  onCreate: (habit: { id: string; name: string; goal: number }) => void;
   open: boolean;
 }) => {
   const [name, setName] = useState("");

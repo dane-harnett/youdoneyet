@@ -4,6 +4,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { SerializedHabit } from "../src/types/SerializedHabit";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
@@ -14,7 +15,13 @@ function createApolloClient() {
         fields: {
           habits: {
             read() {
-              return JSON.parse(window.localStorage.getItem("habits") || "[]");
+              const habits = JSON.parse(
+                window.localStorage.getItem("habits") || "[]"
+              );
+              return habits.map((habit: SerializedHabit) => ({
+                ...habit,
+                count: 0,
+              }));
             },
           },
         },

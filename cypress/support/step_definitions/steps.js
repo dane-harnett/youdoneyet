@@ -28,6 +28,7 @@ Then("I see the following habit list:", (dataTable) => {
   dataTable.rawTable.slice(1).forEach((line) => {
     cy.get("[data-testid=habit-list]").contains(`Name: ${line[0]}`);
     cy.get("[data-testid=habit-list]").contains(`Goal: ${line[1]}`);
+    cy.get("[data-testid=habit-list]").contains(`Count: ${line[2]}`);
   });
 });
 
