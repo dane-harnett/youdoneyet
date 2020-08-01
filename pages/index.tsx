@@ -17,7 +17,7 @@ export const IndexPage = () => {
         onPrevious={() => setSelectedDate(sub(selectedDate, { days: 1 }))}
         onNext={() => setSelectedDate(add(selectedDate, { days: 1 }))}
       />
-      <HabitList />
+      <HabitList selectedDate={selectedDate} />
     </div>
   );
 };

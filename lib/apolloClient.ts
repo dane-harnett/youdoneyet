@@ -6,6 +6,7 @@ import {
 } from "@apollo/client";
 import { HabitLog } from "../src/types/HabitLog";
 import { SerializedHabit } from "../src/types/SerializedHabit";
+import { format } from "date-fns";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
@@ -15,12 +16,16 @@ function createApolloClient() {
       Query: {
         fields: {
           habits: {
-            read() {
+            read(_parent, context) {
+              const selectedDate = context?.variables?.selectedDate;
               const habits = JSON.parse(
                 window.localStorage.getItem("habits") || "[]"
               );
               const habitLogs = JSON.parse(
                 window.localStorage.getItem("habit_logs") || "[]"
+              ).filter(
+                (log: HabitLog) =>
+                  log.dateLogged === format(selectedDate, "yyyy-MM-dd")
               );
               return habits.map((habit: SerializedHabit) => ({
                 ...habit,

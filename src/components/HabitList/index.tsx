@@ -2,6 +2,7 @@ import { gql, useApolloClient, useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { makeStyles, CircularProgress, Fab, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import { format } from "date-fns";
 
 import CreateHabitDialog from "../CreateHabitDialog";
 import EmptyHabitList from "../EmptyHabitList";
@@ -31,9 +32,11 @@ const useFabStyles = makeStyles({
   },
 });
 
-export const HabitList = () => {
+export const HabitList = ({ selectedDate }) => {
   const fabClasses = useFabStyles();
-  const { data, loading } = useQuery(HABITS_QUERY);
+  const { data, loading } = useQuery(HABITS_QUERY, {
+    variables: { selectedDate },
+  });
   const apolloClient = useApolloClient();
 
   // refactor into a hook so we can stub in unit tests
@@ -80,7 +83,13 @@ export const HabitList = () => {
                   data-testid="log-button"
                   variant="contained"
                   color="secondary"
-                  onClick={() => onLog({ habitId: id, count: 1 })}
+                  onClick={() =>
+                    onLog({
+                      habitId: id,
+                      count: 1,
+                      dateLogged: format(selectedDate, "yyyy-MM-dd"),
+                    })
+                  }
                 >
                   Log
                 </Button>

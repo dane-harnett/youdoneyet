@@ -22,7 +22,7 @@ describe("Habit list", () => {
   const renderWithOneHabit = () =>
     render(
       <MockedProvider cache={cache} addTypename={false}>
-        <HabitList />
+        <HabitList selectedDate={new Date()} />
       </MockedProvider>
     );
 
