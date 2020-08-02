@@ -31,20 +31,25 @@ describe("Habit list", () => {
     await findByTestId("loading");
   });
   it("contains the habit list with one habit", async () => {
-    const { findByTestId, getByText } = renderWithOneHabit();
+    const { findByTestId } = renderWithOneHabit();
     await findByTestId("habit-list");
-    await getByText("Name: habit name");
-    await getByText("Goal: 1");
-    await getByText("Count: 0");
+    const habitName = await findByTestId("habit-name");
+    expect(habitName).toHaveTextContent("habit name");
+    const habitGoal = await findByTestId("habit-goal");
+    expect(habitGoal).toHaveTextContent("1");
+    const habitCount = await findByTestId("habit-count");
+    expect(habitCount).toHaveTextContent("0");
     await findByTestId("log-button");
   });
   it("logs a habit", async () => {
-    const { findByTestId, findByText } = renderWithOneHabit();
+    const { findByTestId } = renderWithOneHabit();
     const logButton = await findByTestId("log-button");
-    await findByText("Count: 0");
+    const habitCount = await findByTestId("habit-count");
+    expect(habitCount).toHaveTextContent("0");
     // this increments the count in local storage simulating by changing this
     count = 1;
     fireEvent.click(logButton);
-    await findByText("Count: 1");
+    await findByTestId("habit-count");
+    expect(habitCount).toHaveTextContent("1");
   });
 });
