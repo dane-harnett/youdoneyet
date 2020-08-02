@@ -36,9 +36,9 @@ Then("I see an empty habit list", () => {
 Then("I see the following habit list:", (dataTable) => {
   cy.get("[data-testid=habit-list]");
   dataTable.rawTable.slice(1).forEach((line) => {
-    cy.get("[data-testid=habit-list]").contains(`Name: ${line[0]}`);
-    cy.get("[data-testid=habit-list]").contains(`Goal: ${line[1]}`);
-    cy.get("[data-testid=habit-list]").contains(`Count: ${line[2] || 0}`);
+    cy.get("[data-testid=habit-name]").contains(line[0]);
+    cy.get("[data-testid=habit-goal]").contains(line[1]);
+    cy.get("[data-testid=habit-count]").contains(line[2] || "0");
   });
 });
 
