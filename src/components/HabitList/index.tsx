@@ -4,7 +4,6 @@ import {
   makeStyles,
   CircularProgress,
   Fab,
-  Button,
   Grid,
   Box,
   LinearProgress,
@@ -42,8 +41,10 @@ const useFabStyles = makeStyles({
     position: "fixed",
   },
 });
-
-export const HabitList = ({ selectedDate }) => {
+interface Props {
+  selectedDate: Date;
+}
+export const HabitList = ({ selectedDate }: Props) => {
   const fabClasses = useFabStyles();
   const { data, loading } = useQuery(HABITS_QUERY, {
     variables: { selectedDate },
@@ -58,7 +59,7 @@ export const HabitList = ({ selectedDate }) => {
     apolloClient.cache.evict({ fieldName: "habits" });
   };
 
-  const onCreate = (habit: Habit) => {
+  const onCreate = (habit: { id: string; name: string; goal: number }) => {
     setHabitList(data.habits.concat([habit]));
   };
   const onLog = (log: HabitLog) => {
