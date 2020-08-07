@@ -26,10 +26,6 @@ describe("Habit list", () => {
       </MockedProvider>
     );
 
-  it("indicates loading", async () => {
-    const { findByTestId } = renderWithOneHabit();
-    await findByTestId("loading");
-  });
   it("contains the habit list with one habit", async () => {
     const { findByTestId } = renderWithOneHabit();
     await findByTestId("habit-list");

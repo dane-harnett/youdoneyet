@@ -6,7 +6,7 @@ import {
 } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import { format } from "date-fns";
-import { IndexPage } from "../index";
+import { DayScreen } from "../index";
 import { InMemoryCache } from "@apollo/client";
 
 describe("Day screen", () => {
@@ -26,7 +26,7 @@ describe("Day screen", () => {
   const renderWithEmptyHabits = () =>
     render(
       <MockedProvider cache={cache} addTypename={false}>
-        <IndexPage />
+        <DayScreen />
       </MockedProvider>
     );
 
@@ -54,10 +54,6 @@ describe("Day screen", () => {
     expect(selectedDateEl).toHaveTextContent(
       format(new Date(), "EEEE, d LLLL yyyy")
     );
-  });
-  it("indicates loading", async () => {
-    const { findByTestId } = renderWithEmptyHabits();
-    await findByTestId("loading");
   });
   it("contains the empty habit list", async () => {
     const { findByTestId } = renderWithEmptyHabits();
