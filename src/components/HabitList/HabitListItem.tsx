@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  makeStyles,
-  Grid,
-  Box,
-  Typography,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Box, Typography, IconButton } from "@material-ui/core";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
 import { format } from "date-fns";
 
