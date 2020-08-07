@@ -1,17 +1,7 @@
 import { gql, useApolloClient, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import {
-  makeStyles,
-  CircularProgress,
-  Fab,
-  Grid,
-  Box,
-  LinearProgress,
-  Typography,
-  IconButton,
-} from "@material-ui/core";
+import { makeStyles, CircularProgress, Fab, Box } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import LogIcon from "@material-ui/icons/PlaylistAdd";
 import { format } from "date-fns";
 
 import CreateHabitDialog from "../CreateHabitDialog";
@@ -19,6 +9,7 @@ import EmptyHabitList from "../EmptyHabitList";
 
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
+import HabitListItem from "./HabitListItem";
 
 export const HABITS_QUERY = gql`
   query {
@@ -86,52 +77,13 @@ export const HabitList = ({ selectedDate }: Props) => {
       ) : (
         <>
           <Box px={1} data-testid="habit-list">
-            {data.habits.map(({ id, name, goal, count }: Habit) => (
-              <Box
-                bgcolor={"#e4e4e4"}
-                display="flex"
-                key={id}
-                alignItems="center"
-                p={1}
-                borderRadius={4}
-                mb={1}
-              >
-                <Grid item container>
-                  <Grid item xs={12} data-testid="habit-name">
-                    {name}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box display="flex" alignItems="center">
-                      <Box width="100%" mr={1}>
-                        <LinearProgress
-                          color="primary"
-                          variant="determinate"
-                          value={(count / goal) * 100}
-                        />
-                      </Box>
-                      <Box minWidth={40}>
-                        <Typography variant="body2" color="textSecondary">
-                          <span data-testid="habit-count">{count}</span>/
-                          <span data-testid="habit-goal">{goal}</span>
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                </Grid>
-
-                <IconButton
-                  data-testid="log-button"
-                  onClick={() =>
-                    onLog({
-                      habitId: id,
-                      count: 1,
-                      dateLogged: format(selectedDate, "yyyy-MM-dd"),
-                    })
-                  }
-                >
-                  <LogIcon fontSize="small" />
-                </IconButton>
-              </Box>
+            {data.habits.map((habit: Habit) => (
+              <HabitListItem
+                key={`${format(selectedDate, "yyyy-MM-dd")}-${habit.id}`}
+                habit={habit}
+                onLog={onLog}
+                selectedDate={selectedDate}
+              />
             ))}
           </Box>
           <Fab
