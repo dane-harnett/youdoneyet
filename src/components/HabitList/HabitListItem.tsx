@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Box, Typography, IconButton } from "@material-ui/core";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
 import { format } from "date-fns";
 
@@ -26,6 +27,8 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
         background:
           habit.count === 0
             ? `#e4e4e4`
+            : habit.count === habit.goal
+            ? `#81c784`
             : `linear-gradient(to right, #64b5f6 ${percentComplete}%, #e4e4e4 ${percentComplete}%)`,
       }}
     >
@@ -44,18 +47,22 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
           </Box>
         </Grid>
       </Grid>
-      <IconButton
-        data-testid="log-button"
-        onClick={() =>
-          onLog({
-            habitId: habit.id,
-            count: 1,
-            dateLogged: format(selectedDate, "yyyy-MM-dd"),
-          })
-        }
-      >
-        <LogIcon fontSize="small" />
-      </IconButton>
+      {habit.count < habit.goal ? (
+        <IconButton
+          data-testid="log-button"
+          onClick={() =>
+            onLog({
+              habitId: habit.id,
+              count: 1,
+              dateLogged: format(selectedDate, "yyyy-MM-dd"),
+            })
+          }
+        >
+          <LogIcon fontSize="small" />
+        </IconButton>
+      ) : (
+        <CheckCircleIcon htmlColor="#e4e4e4" />
+      )}
     </Box>
   );
 };
