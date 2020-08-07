@@ -88,11 +88,13 @@ export const HabitList = ({ selectedDate }) => {
             {data.habits.map(
               ({ id, name, goal, count }: Habit, index: number) => (
                 <Box
-                  bgcolor={index % 2 === 0 ? "info.light" : "white"}
+                  bgcolor={"#e4e4e4"}
                   display="flex"
                   key={id}
                   alignItems="center"
                   p={1}
+                  borderRadius={4}
+                  mb={1}
                 >
                   <Grid item container>
                     <Grid item xs={12} data-testid="habit-name">
