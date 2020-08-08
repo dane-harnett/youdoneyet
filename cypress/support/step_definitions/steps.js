@@ -7,9 +7,9 @@ Given("I am yet to create any habits", () => {
 
 Given("I have the following habits:", (dataTable) => {
   const habits = dataTable.rawTable.slice(1).map((line) => ({
-    id: "test",
+    id: line[0],
     name: line[0],
-    goal: line[1],
+    goal: parseInt(line[1], 10),
   }));
   window.localStorage.setItem("habits", JSON.stringify(habits));
 });
@@ -39,6 +39,17 @@ Then("I see the following habit list:", (dataTable) => {
     cy.get("[data-testid=habit-name]").contains(line[0]);
     cy.get("[data-testid=habit-goal]").contains(line[1]);
     cy.get("[data-testid=habit-count]").contains(line[2] || "0");
+  });
+});
+
+Then("I see that {string} is complete", (habitName) => {
+  cy.get(`[data-testid="${habitName}"]`).should(
+    "have.css",
+    "background-color",
+    "rgb(129, 199, 132)"
+  );
+  cy.get(`[data-testid="${habitName}"]`).within(() => {
+    cy.get("[data-testid=completed-icon]");
   });
 });
 
