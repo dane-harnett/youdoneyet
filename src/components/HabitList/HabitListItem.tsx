@@ -17,6 +17,7 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
   const percentComplete = (habit.count / habit.goal) * 100;
   return (
     <Box
+      data-testid={habit.id}
       display="flex"
       key={habit.id}
       alignItems="center"
@@ -61,7 +62,7 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
           <LogIcon fontSize="small" />
         </IconButton>
       ) : (
-        <CheckCircleIcon htmlColor="#e4e4e4" />
+        <CheckCircleIcon htmlColor="#e4e4e4" data-testid="completed-icon" />
       )}
     </Box>
   );
