@@ -3,10 +3,16 @@ import AppHeader from "../AppHeader";
 import NavigationTabs from "../NavigationTabs";
 import SummaryList from "../SummaryList";
 
-export const SummaryScreen = () => {
+import { ThemeType } from "../../types/ThemeType";
+interface Props {
+  themeType: ThemeType;
+  setThemeType: (themeType: ThemeType) => void;
+}
+
+export const SummaryScreen = ({ themeType = "light", setThemeType }: Props) => {
   return (
     <div data-testid="summary-screen">
-      <AppHeader />
+      <AppHeader themeType={themeType} setThemeType={setThemeType} />
       <NavigationTabs value={1} />
       <SummaryList />
     </div>
