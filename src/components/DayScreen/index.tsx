@@ -10,7 +10,7 @@ export const DayScreen = () => {
   return (
     <div data-testid="day-screen">
       <AppHeader />
-      <NavigationTabs />
+      <NavigationTabs value={0} />
       <SelectedDate
         selectedDate={selectedDate}
         onPrevious={() => setSelectedDate(sub(selectedDate, { days: 1 }))}

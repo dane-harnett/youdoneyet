@@ -18,6 +18,14 @@ When("I navigate to the day screen", () => {
   cy.visit("/");
 });
 
+When("I navigate to the summary screen", () => {
+  cy.visit("/summary");
+});
+
+When("I choose to navigate to the {string} screen", (screenName) => {
+  cy.get(`[data-testid=${screenName}-tab`).click();
+});
+
 When("I reload the page", () => {
   cy.reload();
 });
@@ -27,10 +35,26 @@ Then("I see the day screen", () => {
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
   cy.get("[data-testid=selected-date]");
+  cy.get("[data-testid=day-tab").should("have.attr", "aria-selected", "true");
+});
+
+Then("I see the summary screen", () => {
+  cy.get("[data-testid=summary-screen]");
+  cy.get("[data-testid=app-header]");
+  cy.get("[data-testid=navigation-tabs]");
+  cy.get("[data-testid=summary-tab").should(
+    "have.attr",
+    "aria-selected",
+    "true"
+  );
 });
 
 Then("I see an empty habit list", () => {
   cy.get("[data-testid=empty-habit-list]");
+});
+
+Then("I see an empty summary list", () => {
+  cy.get("[data-testid=empty-summary-list]");
 });
 
 Then("I see the following habit list:", (dataTable) => {
@@ -110,3 +134,42 @@ When(
     cy.get(`[data-testid=${targetDate}-date-button]`).click();
   }
 );
+
+Given(
+  "I have completed {string} the following days {string}",
+  (habitId, records) => {
+    const habitLogs = records
+      .split("")
+      .reverse()
+      .reduce((acc, recordValue, index) => {
+        if (recordValue === "N") {
+          return acc;
+        } else {
+          return acc.concat([
+            {
+              habitId,
+              count: 1,
+              dateLogged: format(
+                sub(new Date(), { days: index }),
+                "yyyy-MM-dd"
+              ),
+            },
+          ]);
+        }
+      }, []);
+    window.localStorage.setItem("habit_logs", JSON.stringify(habitLogs));
+  }
+);
+
+Then("I see the following summaries:", (dataTable) => {
+  cy.get("[data-testid=summary-list]");
+  dataTable.rawTable.slice(1).forEach((line) => {
+    cy.get("[data-testid=habit-name]").contains(line[0]);
+    const records = line[1].split("");
+    cy.get("[data-testid=records]");
+    cy.get("[data-testid=record-item]").each((recordItem, index) => {
+      cy.log(index);
+      cy.wrap(recordItem).should("have.attr", "data-completed", records[index]);
+    });
+  });
+});
