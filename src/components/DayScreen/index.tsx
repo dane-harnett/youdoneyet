@@ -5,11 +5,20 @@ import NavigationTabs from "../NavigationTabs";
 import SelectedDate from "../SelectedDate";
 import HabitList from "../HabitList";
 
-export const DayScreen = () => {
+import { ThemeType } from "../../types/ThemeType";
+interface Props {
+  themeType?: ThemeType;
+  setThemeType?: (themeType: ThemeType) => void;
+}
+
+export const DayScreen = ({
+  themeType = "light",
+  setThemeType = () => {},
+}: Props) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   return (
     <div data-testid="day-screen">
-      <AppHeader />
+      <AppHeader themeType={themeType} setThemeType={setThemeType} />
       <NavigationTabs value={0} />
       <SelectedDate
         selectedDate={selectedDate}
