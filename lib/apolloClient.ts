@@ -6,7 +6,7 @@ import {
 } from "@apollo/client";
 import { HabitLog } from "../src/types/HabitLog";
 import { SerializedHabit } from "../src/types/SerializedHabit";
-import { format } from "date-fns";
+import { format, eachDayOfInterval, sub } from "date-fns";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null;
 
@@ -33,6 +33,46 @@ function createApolloClient() {
                   .filter((log: HabitLog) => log.habitId == habit.id)
                   .reduce((sum: number, log: HabitLog) => sum + log.count, 0),
               }));
+            },
+          },
+          summaries: {
+            read() {
+              const habits = JSON.parse(
+                window.localStorage.getItem("habits") || "[]"
+              );
+              const habitLogs = JSON.parse(
+                window.localStorage.getItem("habit_logs") || "[]"
+              );
+              const dates = eachDayOfInterval({
+                start: sub(new Date(), { days: 21 }),
+                end: new Date(),
+              });
+              console.log("dates", dates);
+              return habits.map((habit: SerializedHabit) => {
+                const thisHabitsLogs = habitLogs.filter(
+                  (log: HabitLog) => log.habitId == habit.id
+                );
+                return {
+                  ...habit,
+                  records: dates.map((date) => {
+                    const completed =
+                      habit.goal ===
+                      thisHabitsLogs
+                        .filter(
+                          (log: HabitLog) =>
+                            log.dateLogged === format(date, "yyyy-MM-dd")
+                        )
+                        .reduce(
+                          (sum: number, log: HabitLog) => sum + log.count,
+                          0
+                        );
+                    return {
+                      date,
+                      completed,
+                    };
+                  }),
+                };
+              });
             },
           },
         },

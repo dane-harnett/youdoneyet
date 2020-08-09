@@ -53,6 +53,10 @@ Then("I see an empty habit list", () => {
   cy.get("[data-testid=empty-habit-list]");
 });
 
+Then("I see an empty summary list", () => {
+  cy.get("[data-testid=empty-summary-list]");
+});
+
 Then("I see the following habit list:", (dataTable) => {
   cy.get("[data-testid=habit-list]");
   dataTable.rawTable.slice(1).forEach((line) => {
@@ -130,3 +134,37 @@ When(
     cy.get(`[data-testid=${targetDate}-date-button]`).click();
   }
 );
+
+Given(
+  "I have completed {string} the following days {string}",
+  (habitId, records) => {
+    const habitLogs = records
+      .split("")
+      .reverse()
+      .reduce((acc, recordValue, index) => {
+        if (recordValue === "N") {
+          return acc;
+        } else {
+          return acc.concat([
+            {
+              habitId,
+              count: 1,
+              dateLogged: format(
+                sub(new Date(), { days: index }),
+                "yyyy-MM-dd"
+              ),
+            },
+          ]);
+        }
+      }, []);
+    window.localStorage.setItem("habit_logs", JSON.stringify(habitLogs));
+  }
+);
+
+Then("I see the following summaries:", (dataTable) => {
+  cy.get("[data-testid=summary-list]");
+  dataTable.rawTable.slice(1).forEach((line) => {
+    cy.get("[data-testid=habit-name]").contains(line[0]);
+    cy.get("[data-testid=records]").contains(line[1]);
+  });
+});
