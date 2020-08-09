@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { CircularProgress, Typography } from "@material-ui/core";
+import { Summary } from "../../types/Summary";
 
 export const SUMMARIES_QUERY = gql`
   query {
@@ -34,7 +35,7 @@ export const SummaryList = () => {
         </div>
       ) : (
         <div data-testid="summary-list">
-          {data.summaries.map((summary) => {
+          {data.summaries.map((summary: Summary) => {
             return (
               <div>
                 <div data-testid="habit-name">{summary.name}</div>

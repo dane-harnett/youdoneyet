@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import Router from "next/router";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
@@ -17,7 +16,7 @@ export const NavigationTabs = ({ value }: Props) => (
       indicatorColor="primary"
       textColor="primary"
       aria-label="navigation tabs"
-      onChange={(event, index) => {
+      onChange={(_, index: number) => {
         if (index === 0) {
           Router.push("/");
         } else {
