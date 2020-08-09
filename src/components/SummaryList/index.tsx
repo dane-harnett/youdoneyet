@@ -1,6 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { CircularProgress, Typography } from "@material-ui/core";
+import { Box, CircularProgress, Typography } from "@material-ui/core";
+import CompletedIcon from "@material-ui/icons/SentimentVerySatisfiedRounded";
+import NotCompletedIcon from "@material-ui/icons/SentimentVeryDissatisfiedRounded";
 import { Summary } from "../../types/Summary";
 
 export const SUMMARIES_QUERY = gql`
@@ -34,20 +36,53 @@ export const SummaryList = () => {
           </Typography>
         </div>
       ) : (
-        <div data-testid="summary-list">
+        <Box mt={1} px={1} data-testid="summary-list">
           {data.summaries.map((summary: Summary) => {
             return (
-              <div>
-                <div data-testid="habit-name">{summary.name}</div>
-                <div data-testid="records">
+              <Box
+                display="flex"
+                flexDirection="column"
+                key={summary.id}
+                alignItems="start"
+                justifyContent="space-between"
+                p={1}
+                borderRadius={4}
+                mb={1}
+                bgcolor="#e4e4e4"
+              >
+                <Typography variant="subtitle1" data-testid="habit-name">
+                  {summary.name}
+                </Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-evenly"
+                  data-testid="records"
+                  width="100%"
+                >
                   {summary.records.map((record) =>
-                    record.completed ? "Y" : "N"
+                    record.completed ? (
+                      <CompletedIcon
+                        key={record.date}
+                        data-completed="Y"
+                        data-testid="record-item"
+                        color="primary"
+                        fontSize="small"
+                      />
+                    ) : (
+                      <NotCompletedIcon
+                        key={record.date}
+                        data-completed="N"
+                        data-testid="record-item"
+                        color="error"
+                        fontSize="small"
+                      />
+                    )
                   )}
-                </div>
-              </div>
+                </Box>
+              </Box>
             );
           })}
-        </div>
+        </Box>
       )}
     </>
   );

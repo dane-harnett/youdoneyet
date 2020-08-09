@@ -165,6 +165,11 @@ Then("I see the following summaries:", (dataTable) => {
   cy.get("[data-testid=summary-list]");
   dataTable.rawTable.slice(1).forEach((line) => {
     cy.get("[data-testid=habit-name]").contains(line[0]);
-    cy.get("[data-testid=records]").contains(line[1]);
+    const records = line[1].split("");
+    cy.get("[data-testid=records]");
+    cy.get("[data-testid=record-item]").each((recordItem, index) => {
+      cy.log(index);
+      cy.wrap(recordItem).should("have.attr", "data-completed", records[index]);
+    });
   });
 });

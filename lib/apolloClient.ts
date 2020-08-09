@@ -44,10 +44,9 @@ function createApolloClient() {
                 window.localStorage.getItem("habit_logs") || "[]"
               );
               const dates = eachDayOfInterval({
-                start: sub(new Date(), { days: 21 }),
+                start: sub(new Date(), { days: 20 }),
                 end: new Date(),
               });
-              console.log("dates", dates);
               return habits.map((habit: SerializedHabit) => {
                 const thisHabitsLogs = habitLogs.filter(
                   (log: HabitLog) => log.habitId == habit.id
