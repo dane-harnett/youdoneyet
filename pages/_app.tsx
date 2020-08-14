@@ -27,11 +27,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={themeType === "light" ? lightTheme : darkTheme}>
           <CssBaseline />
-          <Component
-            {...pageProps}
-            themeType={themeType}
-            setThemeType={setThemeType}
-          />
+          <div data-theme-type={themeType}>
+            <Component
+              {...pageProps}
+              themeType={themeType}
+              setThemeType={setThemeType}
+            />
+          </div>
         </ThemeProvider>
       </ApolloProvider>
     </>

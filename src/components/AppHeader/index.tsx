@@ -26,6 +26,7 @@ export const AppHeader = ({
       >
         <Typography variant="h6">You Done Yet</Typography>
         <IconButton
+          data-testid="theme-type-toggle-button"
           onClick={() => setThemeType(themeType === "light" ? "dark" : "light")}
         >
           {themeType === "light" ? (

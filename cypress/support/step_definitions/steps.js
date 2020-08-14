@@ -173,3 +173,10 @@ Then("I see the following summaries:", (dataTable) => {
     });
   });
 });
+
+Then("I see that I am in {string} mode", (themeType) => {
+  cy.get(`[data-theme-type=${themeType}]`);
+});
+When("I choose to change to {string} mode", (themeType) => {
+  cy.get(`[data-testid=theme-type-toggle-button]`).click();
+});
