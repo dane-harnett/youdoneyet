@@ -48,6 +48,7 @@ export const HabitList = ({ selectedDate }: Props) => {
   const setHabitList = (habitList: Array<Habit>) => {
     window.localStorage.setItem("habits", JSON.stringify(habitList));
     apolloClient.cache.evict({ fieldName: "habits" });
+    apolloClient.cache.evict({ fieldName: "summaries" });
   };
 
   const onCreate = (habit: { id: string; name: string; goal: number }) => {
@@ -62,6 +63,7 @@ export const HabitList = ({ selectedDate }: Props) => {
       JSON.stringify(habitLogs.concat(log))
     );
     apolloClient.cache.evict({ fieldName: "habits" });
+    apolloClient.cache.evict({ fieldName: "summaries" });
   };
 
   const [open, setOpen] = useState(false);

@@ -27,7 +27,7 @@ When("I navigate to the summary screen", () => {
 });
 
 When("I choose to navigate to the {string} screen", (screenName) => {
-  cy.get(`[data-testid=${screenName}-tab`).click();
+  cy.get(`[data-testid=${screenName}-tab]`).click();
 });
 
 When("I reload the page", () => {
@@ -39,14 +39,14 @@ Then("I see the day screen", () => {
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
   cy.get("[data-testid=selected-date]");
-  cy.get("[data-testid=day-tab").should("have.attr", "aria-selected", "true");
+  cy.get("[data-testid=day-tab]").should("have.attr", "aria-selected", "true");
 });
 
 Then("I see the summary screen", () => {
   cy.get("[data-testid=summary-screen]");
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
-  cy.get("[data-testid=summary-tab").should(
+  cy.get("[data-testid=summary-tab]").should(
     "have.attr",
     "aria-selected",
     "true"

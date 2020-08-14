@@ -9,3 +9,18 @@ Feature: Summary screen
     Then I see the following summaries:
       | name             | records               |
       | Drink more water | NNNNNNYYNYYNNYYNYNNYY |
+
+
+  Scenario: See a habit I just created on the summary screen
+    Given I am yet to create any habits
+    And I navigate to the summary screen
+    And I choose to navigate to the "day" screen
+    And I see the day screen
+    And I choose to create my first habit
+    And I enter "Drink more water" for the name
+    And I enter 4 for the goal
+    And I choose to create
+    When I choose to navigate to the "summary" screen
+    Then I see the following summaries:
+      | name             | records               |
+      | Drink more water | NNNNNNNNNNNNNNNNNNNNN |
