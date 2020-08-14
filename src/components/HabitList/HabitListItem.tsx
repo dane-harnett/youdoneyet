@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Box, Typography, IconButton } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
 import { format } from "date-fns";
 
+import LogDialog from "../LogDialog";
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
   const emptyBgColor = theme.custom.ListItem.backgroundColor;
   const percentComplete = (habit.count / habit.goal) * 100;
@@ -54,19 +56,34 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
       {habit.count < habit.goal ? (
         <IconButton
           data-testid="log-button"
-          onClick={() =>
-            onLog({
-              habitId: habit.id,
-              count: 1,
-              dateLogged: format(selectedDate, "yyyy-MM-dd"),
-            })
-          }
+          onClick={() => {
+            if (habit.count + 1 < habit.goal) {
+              setOpen(true);
+            } else {
+              onLog({
+                habitId: habit.id,
+                count: 1,
+                dateLogged: format(selectedDate, "yyyy-MM-dd"),
+              });
+            }
+          }}
         >
           <LogIcon fontSize="small" />
         </IconButton>
       ) : (
         <CheckCircleIcon htmlColor="#e4e4e4" data-testid="completed-icon" />
       )}
+      <LogDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        onLogCount={({ count }) => {
+          onLog({
+            habitId: habit.id,
+            count,
+            dateLogged: format(selectedDate, "yyyy-MM-dd"),
+          });
+        }}
+      />
     </Box>
   );
 };

@@ -113,8 +113,16 @@ When("I enter {int} for the goal", (goal) => {
   cy.get("[data-testid=goal-field]").type(`{backspace}${goal}`);
 });
 
+When("I enter {int} for the count", (count) => {
+  cy.get("[data-testid=count-field]").type(`{backspace}${count}`);
+});
+
 When("I choose to create", () => {
   cy.get("[data-testid=create-button]").click();
+});
+
+When("I choose to log the count", () => {
+  cy.get("[data-testid=log-count-button]").click();
 });
 
 When(`I log a record for "Drink more water"`, () => {
