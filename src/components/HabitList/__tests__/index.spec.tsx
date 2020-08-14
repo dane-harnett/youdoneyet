@@ -1,6 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { lightTheme } from "../../../theme";
 import { HabitList } from "../index";
 import { InMemoryCache } from "@apollo/client";
 
@@ -21,9 +23,11 @@ describe("Habit list", () => {
   });
   const renderWithOneHabit = () =>
     render(
-      <MockedProvider cache={cache} addTypename={false}>
-        <HabitList selectedDate={new Date()} />
-      </MockedProvider>
+      <ThemeProvider theme={lightTheme}>
+        <MockedProvider cache={cache} addTypename={false}>
+          <HabitList selectedDate={new Date()} />
+        </MockedProvider>
+      </ThemeProvider>
     );
 
   it("contains the habit list with one habit", async () => {
