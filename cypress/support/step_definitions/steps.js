@@ -35,7 +35,7 @@ When("I reload the page", () => {
 });
 
 Then("I see the day screen", () => {
-  cy.get("[data-testid=day-screen]");
+  cy.get("[data-testid=day-screen]", { timeout: 8000 });
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
   cy.get("[data-testid=selected-date]");
@@ -43,7 +43,7 @@ Then("I see the day screen", () => {
 });
 
 Then("I see the summary screen", () => {
-  cy.get("[data-testid=summary-screen]");
+  cy.get("[data-testid=summary-screen]", { timeout: 8000 });
   cy.get("[data-testid=app-header]");
   cy.get("[data-testid=navigation-tabs]");
   cy.get("[data-testid=summary-tab]").should(
