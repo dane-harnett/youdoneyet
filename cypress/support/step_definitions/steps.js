@@ -5,6 +5,10 @@ Given("I am yet to create any habits", () => {
   cy.clearLocalStorage();
 });
 
+Given("I am yet to save my theme mode", () => {
+  cy.clearLocalStorage("theme_mode");
+});
+
 Given("I have the following habits:", (dataTable) => {
   const habits = dataTable.rawTable.slice(1).map((line) => ({
     id: line[0],
@@ -70,7 +74,7 @@ Then("I see that {string} is complete", (habitName) => {
   cy.get(`[data-testid="${habitName}"]`).should(
     "have.css",
     "background-color",
-    "rgb(129, 199, 132)"
+    "rgb(154, 210, 156)"
   );
   cy.get(`[data-testid="${habitName}"]`).within(() => {
     cy.get("[data-testid=completed-icon]");
@@ -174,9 +178,9 @@ Then("I see the following summaries:", (dataTable) => {
   });
 });
 
-Then("I see that I am in {string} mode", (themeType) => {
-  cy.get(`[data-theme-type=${themeType}]`);
+Then("I see that I am in {string} mode", (themeMode) => {
+  cy.get(`[data-theme-mode=${themeMode}]`);
 });
-When("I choose to change to {string} mode", (themeType) => {
-  cy.get(`[data-testid=theme-type-toggle-button]`).click();
+When("I choose to change to {string} mode", (themeMode) => {
+  cy.get(`[data-testid=theme-mode-toggle-button]`).click();
 });

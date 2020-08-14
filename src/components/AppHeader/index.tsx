@@ -6,10 +6,10 @@ import { Box, IconButton } from "@material-ui/core";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 
-import ThemeTypeContext from "../../context/ThemeTypeContext";
+import ThemeModeContext from "../../context/ThemeModeContext";
 
 export const AppHeader = () => {
-  const { themeType, setThemeType } = useContext(ThemeTypeContext);
+  const { themeMode, setThemeMode } = useContext(ThemeModeContext);
 
   return (
     <AppBar data-testid="app-header" position="static">
@@ -22,12 +22,12 @@ export const AppHeader = () => {
         >
           <Typography variant="h6">You Done Yet</Typography>
           <IconButton
-            data-testid="theme-type-toggle-button"
+            data-testid="theme-mode-toggle-button"
             onClick={() =>
-              setThemeType(themeType === "light" ? "dark" : "light")
+              setThemeMode(themeMode === "light" ? "dark" : "light")
             }
           >
-            {themeType === "light" ? (
+            {themeMode === "light" ? (
               <Brightness4Icon htmlColor="#ffffff" />
             ) : (
               <Brightness7Icon htmlColor="#ffffff" />

@@ -17,3 +17,10 @@ Feature: Dark mode
     And I choose to change to "dark" mode
     When I choose to change to "light" mode
     Then I see that I am in "light" mode
+
+  Scenario: Theme mode persists when reloading
+    Given I am yet to save my theme mode
+    And I navigate to the day screen
+    And I choose to change to "dark" mode
+    When I reload the page
+    Then I see that I am in "dark" mode
