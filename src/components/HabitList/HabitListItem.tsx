@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Box, Typography, IconButton } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
 import { format } from "date-fns";
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
+  const theme = useTheme();
+  const emptyBgColor = theme.custom.ListItem.backgroundColor;
   const percentComplete = (habit.count / habit.goal) * 100;
   return (
     <Box
@@ -27,10 +30,10 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
       style={{
         background:
           habit.count === 0
-            ? `#e4e4e4`
+            ? emptyBgColor
             : habit.count === habit.goal
-            ? `#81c784`
-            : `linear-gradient(to right, #64b5f6 ${percentComplete}%, #e4e4e4 ${percentComplete}%)`,
+            ? theme.custom.ListItem.completedColor
+            : `linear-gradient(to right, ${theme.custom.ListItem.inProgressColor} ${percentComplete}%, ${emptyBgColor} ${percentComplete}%)`,
       }}
     >
       <Grid item container>

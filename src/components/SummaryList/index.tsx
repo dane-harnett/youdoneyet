@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { Box, CircularProgress, Typography } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import CompletedIcon from "@material-ui/icons/SentimentVerySatisfiedRounded";
 import NotCompletedIcon from "@material-ui/icons/SentimentVeryDissatisfiedRounded";
 import { Summary } from "../../types/Summary";
@@ -20,6 +21,7 @@ export const SUMMARIES_QUERY = gql`
 `;
 
 export const SummaryList = () => {
+  const theme = useTheme();
   const { data, loading } = useQuery(SUMMARIES_QUERY);
 
   return loading ? (
@@ -48,7 +50,7 @@ export const SummaryList = () => {
                 p={1}
                 borderRadius={4}
                 mb={1}
-                bgcolor="#e4e4e4"
+                bgcolor={theme?.custom?.ListItem.backgroundColor}
               >
                 <Typography variant="subtitle1" data-testid="habit-name">
                   {summary.name}
