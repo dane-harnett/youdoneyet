@@ -7,8 +7,8 @@ Feature: Summary screen
     And I have completed "Drink more water" the following days "NNNNNNYYNYYNNYYNYNNYY"
     When I navigate to the summary screen
     Then I see the following summaries:
-      | name             | records               |
-      | Drink more water | NNNNNNYYNYYNNYYNYNNYY |
+      | name             | records               | streak |
+      | Drink more water | NNNNNNYYNYYNNYYNYNNYY | 2      |
 
 
   Scenario: See a habit I just created on the summary screen
@@ -22,5 +22,5 @@ Feature: Summary screen
     And I choose to create
     When I choose to navigate to the "summary" screen
     Then I see the following summaries:
-      | name             | records               |
-      | Drink more water | NNNNNNNNNNNNNNNNNNNNN |
+      | name             | records               | streak |
+      | Drink more water | NNNNNNNNNNNNNNNNNNNNN | 0      |

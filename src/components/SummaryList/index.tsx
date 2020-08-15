@@ -12,6 +12,7 @@ export const SUMMARIES_QUERY = gql`
       id
       name
       goal
+      streak
       records {
         date
         completed
@@ -52,9 +53,14 @@ export const SummaryList = () => {
                 mb={1}
                 bgcolor={theme?.custom?.ListItem.backgroundColor}
               >
-                <Typography variant="subtitle1" data-testid="habit-name">
-                  {summary.name}
-                </Typography>
+                <Box display="flex" justifyContent="space-between" width="100%">
+                  <Typography variant="subtitle1" data-testid="habit-name">
+                    {summary.name}
+                  </Typography>
+                  <Typography variant="subtitle1" data-testid="streak">
+                    Streak: {summary.streak}
+                  </Typography>
+                </Box>
                 <Box
                   display="flex"
                   justifyContent="space-evenly"

@@ -183,6 +183,7 @@ Then("I see the following summaries:", (dataTable) => {
       cy.log(index);
       cy.wrap(recordItem).should("have.attr", "data-completed", records[index]);
     });
+    cy.get("[data-testid=streak]").contains(`Streak: ${line[2]}`);
   });
 });
 
