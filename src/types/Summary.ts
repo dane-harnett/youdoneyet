@@ -5,4 +5,5 @@ export interface Summary {
   name: string;
   goal: number;
   records: SummaryRecord[];
+  streak: number;
 }

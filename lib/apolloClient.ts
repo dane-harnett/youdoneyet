@@ -51,25 +51,37 @@ function createApolloClient() {
                 const thisHabitsLogs = habitLogs.filter(
                   (log: HabitLog) => log.habitId == habit.id
                 );
+                const records = dates.map((date) => {
+                  const completed =
+                    habit.goal ===
+                    thisHabitsLogs
+                      .filter(
+                        (log: HabitLog) =>
+                          log.dateLogged === format(date, "yyyy-MM-dd")
+                      )
+                      .reduce(
+                        (sum: number, log: HabitLog) => sum + log.count,
+                        0
+                      );
+                  return {
+                    date,
+                    completed,
+                  };
+                });
+                const reversedRecords = [...records].reverse();
+                let streak = reversedRecords[0].completed ? 1 : 0;
+                const streakRecords = reversedRecords.slice(1);
+                for (let i = 0; i < streakRecords.length; i++) {
+                  if (streakRecords[i].completed) {
+                    streak++;
+                  } else {
+                    break;
+                  }
+                }
                 return {
                   ...habit,
-                  records: dates.map((date) => {
-                    const completed =
-                      habit.goal ===
-                      thisHabitsLogs
-                        .filter(
-                          (log: HabitLog) =>
-                            log.dateLogged === format(date, "yyyy-MM-dd")
-                        )
-                        .reduce(
-                          (sum: number, log: HabitLog) => sum + log.count,
-                          0
-                        );
-                    return {
-                      date,
-                      completed,
-                    };
-                  }),
+                  streak,
+                  records,
                 };
               });
             },
