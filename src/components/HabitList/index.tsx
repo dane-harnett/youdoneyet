@@ -6,10 +6,11 @@ import { format } from "date-fns";
 
 import CreateHabitDialog from "../CreateHabitDialog";
 import EmptyHabitList from "../EmptyHabitList";
+import HabitListItem from "./HabitListItem";
 
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
-import HabitListItem from "./HabitListItem";
+import { SerializedHabit } from "../../types/SerializedHabit";
 
 export const HABITS_QUERY = gql`
   query {
@@ -51,10 +52,10 @@ export const HabitList = ({ selectedDate }: Props) => {
     apolloClient.cache.evict({ fieldName: "summaries" });
   };
 
-  const onCreate = (habit: { id: string; name: string; goal: number }) => {
+  const onCreate = (habit: SerializedHabit) => {
     setHabitList(data.habits.concat([habit]));
   };
-  const onEdit = (editedHabit: { id: string; name: string; goal: number }) => {
+  const onEdit = (editedHabit: SerializedHabit) => {
     const updatedHabits = data.habits.map((habit: Habit) => {
       return editedHabit.id === habit.id ? editedHabit : habit;
     });

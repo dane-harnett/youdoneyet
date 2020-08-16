@@ -9,11 +9,12 @@ import { format } from "date-fns";
 import LogDialog from "../LogDialog";
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
+import { SerializedHabit } from "../../types/SerializedHabit";
 import EditHabitDialog from "../EditHabitDialog";
 
 interface Props {
   habit: Habit;
-  onEdit: (habit: Habit) => void;
+  onEdit: (habit: SerializedHabit) => void;
   onLog: (log: HabitLog) => void;
   selectedDate: Date;
 }

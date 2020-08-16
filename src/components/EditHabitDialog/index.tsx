@@ -7,7 +7,6 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { v4 as uuidv4 } from "uuid";
 import { Habit } from "../../types/Habit";
 
 export const EditHabitDialog = ({

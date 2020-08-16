@@ -1,6 +1,5 @@
-export interface Habit {
-  id: string;
-  name: string;
-  goal: number;
+import { SerializedHabit } from "./SerializedHabit";
+
+export interface Habit extends SerializedHabit {
   count: number;
 }
