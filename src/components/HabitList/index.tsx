@@ -54,6 +54,12 @@ export const HabitList = ({ selectedDate }: Props) => {
   const onCreate = (habit: { id: string; name: string; goal: number }) => {
     setHabitList(data.habits.concat([habit]));
   };
+  const onEdit = (editedHabit: { id: string; name: string; goal: number }) => {
+    const updatedHabits = data.habits.map((habit: Habit) => {
+      return editedHabit.id === habit.id ? editedHabit : habit;
+    });
+    setHabitList(updatedHabits);
+  };
   const onLog = (log: HabitLog) => {
     const habitLogs = JSON.parse(
       window.localStorage.getItem("habit_logs") || "[]"
@@ -84,6 +90,7 @@ export const HabitList = ({ selectedDate }: Props) => {
                 key={`${format(selectedDate, "yyyy-MM-dd")}-${habit.id}`}
                 habit={habit}
                 onLog={onLog}
+                onEdit={onEdit}
                 selectedDate={selectedDate}
               />
             ))}

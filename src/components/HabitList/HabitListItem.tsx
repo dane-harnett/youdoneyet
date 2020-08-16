@@ -3,20 +3,29 @@ import { Grid, Box, Typography, IconButton } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
+import EditIcon from "@material-ui/icons/Edit";
 import { format } from "date-fns";
 
 import LogDialog from "../LogDialog";
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
+import EditHabitDialog from "../EditHabitDialog";
 
 interface Props {
   habit: Habit;
+  onEdit: (habit: Habit) => void;
   onLog: (log: HabitLog) => void;
   selectedDate: Date;
 }
 
-export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
+export const HabitListItem = ({
+  habit,
+  onEdit,
+  onLog,
+  selectedDate,
+}: Props) => {
   const [open, setOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const theme = useTheme();
   const emptyBgColor = theme.custom.ListItem.backgroundColor;
   const percentComplete = (habit.count / habit.goal) * 100;
@@ -38,6 +47,9 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
             : `linear-gradient(to right, ${theme.custom.ListItem.inProgressColor} ${percentComplete}%, ${emptyBgColor} ${percentComplete}%)`,
       }}
     >
+      <IconButton data-testid="edit-button" onClick={() => setIsEditOpen(true)}>
+        <EditIcon fontSize="small" />
+      </IconButton>
       <Grid item container>
         <Grid item xs={12} data-testid="habit-name">
           {habit.name}
@@ -73,6 +85,12 @@ export const HabitListItem = ({ habit, onLog, selectedDate }: Props) => {
       ) : (
         <CheckCircleIcon htmlColor="#e4e4e4" data-testid="completed-icon" />
       )}
+      <EditHabitDialog
+        habit={habit}
+        onClose={() => setIsEditOpen(false)}
+        onSave={onEdit}
+        open={isEditOpen}
+      />
       <LogDialog
         open={open}
         onClose={() => setOpen(false)}
