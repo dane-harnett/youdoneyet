@@ -89,12 +89,34 @@ When("I choose to create a new habit", () => {
   cy.get("[data-testid=create-new-habit]").click();
 });
 
+When("I choose to edit {string}", (habitName) => {
+  cy.get(`[data-testid="${habitName}"]`).within(() => {
+    cy.get("[data-testid=edit-button]").click();
+  });
+});
+
 Then("I see the create habit form", () => {
   cy.get("[data-testid=create-habit-form]");
   cy.get("[data-testid=name-field]");
   cy.get("[data-testid=goal-field]");
   cy.get("[data-testid=cancel-button]");
   cy.get("[data-testid=create-button]");
+});
+
+Then("I see the edit habit form", () => {
+  cy.get("[data-testid=edit-habit-form]");
+  cy.get("[data-testid=name-field]");
+  cy.get("[data-testid=goal-field]");
+  cy.get("[data-testid=cancel-button]");
+  cy.get("[data-testid=save-button]");
+});
+
+Then("I see the name is {string}", (habitName) => {
+  cy.get("[data-testid=name-field] input").should("have.value", habitName);
+});
+
+Then("I see the goal is {int}", (goal) => {
+  cy.get("[data-testid=goal-field] input").should("have.value", goal);
 });
 
 When("I choose to cancel", () => {
@@ -105,20 +127,28 @@ Then("I no longer see the create habit form", () => {
   cy.get("[data-testid=create-habit-form]").should("not.exist");
 });
 
+Then("I no longer see the edit habit form", () => {
+  cy.get("[data-testid=edit-habit-form]").should("not.exist");
+});
+
 When("I enter {string} for the name", (name) => {
-  cy.get("[data-testid=name-field]").type(name);
+  cy.get("[data-testid=name-field]").type(`{selectall}{backspace}${name}`);
 });
 
 When("I enter {int} for the goal", (goal) => {
-  cy.get("[data-testid=goal-field]").type(`{backspace}${goal}`);
+  cy.get("[data-testid=goal-field]").type(`{selectall}{backspace}${goal}`);
 });
 
 When("I enter {int} for the count", (count) => {
-  cy.get("[data-testid=count-field]").type(`{backspace}${count}`);
+  cy.get("[data-testid=count-field]").type(`{selectall}{backspace}${count}`);
 });
 
 When("I choose to create", () => {
   cy.get("[data-testid=create-button]").click();
+});
+
+When("I choose to save", () => {
+  cy.get("[data-testid=save-button]").click();
 });
 
 When("I choose to log the count", () => {
