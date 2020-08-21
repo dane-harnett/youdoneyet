@@ -3,6 +3,7 @@ import { Grid, Box, Typography, IconButton } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import LogIcon from "@material-ui/icons/PlaylistAdd";
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { format } from "date-fns";
 
@@ -11,9 +12,11 @@ import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
 import { SerializedHabit } from "../../types/SerializedHabit";
 import EditHabitDialog from "../EditHabitDialog";
+import DeleteHabitDialog from "../DeleteHabitDialog";
 
 interface Props {
   habit: Habit;
+  onDelete: (habit: SerializedHabit) => void;
   onEdit: (habit: SerializedHabit) => void;
   onLog: (log: HabitLog) => void;
   selectedDate: Date;
@@ -21,12 +24,14 @@ interface Props {
 
 export const HabitListItem = ({
   habit,
+  onDelete,
   onEdit,
   onLog,
   selectedDate,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const theme = useTheme();
   const emptyBgColor = theme.custom.ListItem.backgroundColor;
   const percentComplete = (habit.count / habit.goal) * 100;
@@ -50,6 +55,12 @@ export const HabitListItem = ({
     >
       <IconButton data-testid="edit-button" onClick={() => setIsEditOpen(true)}>
         <EditIcon fontSize="small" />
+      </IconButton>
+      <IconButton
+        data-testid="delete-button"
+        onClick={() => setIsDeleteOpen(true)}
+      >
+        <DeleteIcon fontSize="small" />
       </IconButton>
       <Grid item container>
         <Grid item xs={12} data-testid="habit-name">
@@ -91,6 +102,12 @@ export const HabitListItem = ({
         onClose={() => setIsEditOpen(false)}
         onSave={onEdit}
         open={isEditOpen}
+      />
+      <DeleteHabitDialog
+        habit={habit}
+        onClose={() => setIsDeleteOpen(false)}
+        onSave={onDelete}
+        open={isDeleteOpen}
       />
       <LogDialog
         open={open}
