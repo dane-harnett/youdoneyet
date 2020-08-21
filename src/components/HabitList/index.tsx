@@ -61,6 +61,23 @@ export const HabitList = ({ selectedDate }: Props) => {
     });
     setHabitList(updatedHabits);
   };
+  const onDelete = (deletedHabit: SerializedHabit) => {
+    const remainingHabits = data.habits.filter((habit: Habit) => {
+      return habit.id !== deletedHabit.id;
+    });
+    const habitLogs = JSON.parse(
+      window.localStorage.getItem("habit_logs") || "[]"
+    );
+    const remainingHabitLogs = habitLogs.filter((log: HabitLog) => {
+      return log.habitId !== deletedHabit.id;
+    });
+    window.localStorage.setItem(
+      "habit_logs",
+      JSON.stringify(remainingHabitLogs)
+    );
+    setHabitList(remainingHabits);
+    apolloClient.cache.evict({ fieldName: "summaries" });
+  };
   const onLog = (log: HabitLog) => {
     const habitLogs = JSON.parse(
       window.localStorage.getItem("habit_logs") || "[]"
@@ -92,6 +109,7 @@ export const HabitList = ({ selectedDate }: Props) => {
                 habit={habit}
                 onLog={onLog}
                 onEdit={onEdit}
+                onDelete={onDelete}
                 selectedDate={selectedDate}
               />
             ))}

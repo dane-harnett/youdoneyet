@@ -63,10 +63,15 @@ Then("I see an empty summary list", () => {
 
 Then("I see the following habit list:", (dataTable) => {
   cy.get("[data-testid=habit-list]");
-  dataTable.rawTable.slice(1).forEach((line) => {
-    cy.get("[data-testid=habit-name]").contains(line[0]);
-    cy.get("[data-testid=habit-goal]").contains(line[1]);
-    cy.get("[data-testid=habit-count]").contains(line[2] || "0");
+  const expectedHabits = dataTable.rawTable.slice(1);
+  cy.get("[data-testid=habit-list] > div").each((item, index) => {
+    cy.wrap(item).within(() => {
+      cy.get("[data-testid=habit-name]").contains(expectedHabits[index][0]);
+      cy.get("[data-testid=habit-goal]").contains(expectedHabits[index][1]);
+      cy.get("[data-testid=habit-count]").contains(
+        expectedHabits[index][2] || "0"
+      );
+    });
   });
 });
 
@@ -95,6 +100,12 @@ When("I choose to edit {string}", (habitName) => {
   });
 });
 
+When("I choose to delete {string}", (habitName) => {
+  cy.get(`[data-testid="${habitName}"]`).within(() => {
+    cy.get("[data-testid=delete-button]").click();
+  });
+});
+
 Then("I see the create habit form", () => {
   cy.get("[data-testid=create-habit-form]");
   cy.get("[data-testid=name-field]");
@@ -109,6 +120,12 @@ Then("I see the edit habit form", () => {
   cy.get("[data-testid=goal-field]");
   cy.get("[data-testid=cancel-button]");
   cy.get("[data-testid=save-button]");
+});
+
+Then("I see the delete habit form", () => {
+  cy.get("[data-testid=delete-habit-form]");
+  cy.get("[data-testid=cancel-button]");
+  cy.get("[data-testid=delete-button]");
 });
 
 Then("I see the name is {string}", (habitName) => {
@@ -131,6 +148,10 @@ Then("I no longer see the edit habit form", () => {
   cy.get("[data-testid=edit-habit-form]").should("not.exist");
 });
 
+Then("I no longer see the delete habit form", () => {
+  cy.get("[data-testid=delete-habit-form]").should("not.exist");
+});
+
 When("I enter {string} for the name", (name) => {
   cy.get("[data-testid=name-field]").type(`{selectall}{backspace}${name}`);
 });
@@ -149,6 +170,10 @@ When("I choose to create", () => {
 
 When("I choose to save", () => {
   cy.get("[data-testid=save-button]").click();
+});
+
+When("I choose to confirm delete", () => {
+  cy.get("[data-testid=confirm-delete-button]").click();
 });
 
 When("I choose to log the count", () => {
