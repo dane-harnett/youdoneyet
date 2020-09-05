@@ -13,6 +13,17 @@ const options = {
     jwt: true,
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    session: async (sessionPayload, jwtPayload) => {
+      return Promise.resolve({
+        ...sessionPayload,
+        user: {
+          ...sessionPayload.user,
+          id: jwtPayload.sub,
+        },
+      });
+    },
+  },
 };
 
 export default (req, res) => NextAuth(req, res, options);

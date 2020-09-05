@@ -15,26 +15,26 @@ function createApolloClient() {
     typePolicies: {
       Query: {
         fields: {
-          habits: {
-            read(_parent, context) {
-              const selectedDate = context?.variables?.selectedDate;
-              const habits = JSON.parse(
-                window.localStorage.getItem("habits") || "[]"
-              );
-              const habitLogs = JSON.parse(
-                window.localStorage.getItem("habit_logs") || "[]"
-              ).filter(
-                (log: HabitLog) =>
-                  log.dateLogged === format(selectedDate, "yyyy-MM-dd")
-              );
-              return habits.map((habit: SerializedHabit) => ({
-                ...habit,
-                count: habitLogs
-                  .filter((log: HabitLog) => log.habitId == habit.id)
-                  .reduce((sum: number, log: HabitLog) => sum + log.count, 0),
-              }));
-            },
-          },
+          // habits: {
+          //   read(_parent, context) {
+          //     const selectedDate = context?.variables?.selectedDate;
+          //     const habits = JSON.parse(
+          //       window.localStorage.getItem("habits") || "[]"
+          //     );
+          //     const habitLogs = JSON.parse(
+          //       window.localStorage.getItem("habit_logs") || "[]"
+          //     ).filter(
+          //       (log: HabitLog) =>
+          //         log.dateLogged === format(selectedDate, "yyyy-MM-dd")
+          //     );
+          //     return habits.map((habit: SerializedHabit) => ({
+          //       ...habit,
+          //       count: habitLogs
+          //         .filter((log: HabitLog) => log.habitId == habit.id)
+          //         .reduce((sum: number, log: HabitLog) => sum + log.count, 0),
+          //     }));
+          //   },
+          // },
           summaries: {
             read() {
               const habits = JSON.parse(
@@ -91,6 +91,7 @@ function createApolloClient() {
     },
   });
   return new ApolloClient({
+    uri: "/api/graphql",
     ssrMode: typeof window === "undefined",
     cache,
   });
