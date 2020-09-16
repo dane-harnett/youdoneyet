@@ -1,4 +1,6 @@
 {
     "baseUrl": "http://localhost:3000/",
-    "testFiles": "**/*.feature"
+    "testFiles": "**/*.{feature,features}",
+    "chromeWebSecurity": false,
+    "video": false
 }

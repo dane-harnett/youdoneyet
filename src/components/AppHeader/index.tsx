@@ -5,12 +5,14 @@ import Typography from "@material-ui/core/Typography";
 import { Box, IconButton } from "@material-ui/core";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
-
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ThemeModeContext from "../../context/ThemeModeContext";
 
+import { signOut, useSession } from "next-auth/client";
 export const AppHeader = () => {
   const { themeMode, setThemeMode } = useContext(ThemeModeContext);
-
+  const [session, loading] = useSession();
+  if (loading) return null;
   return (
     <AppBar data-testid="app-header" position="static">
       <Toolbar>
@@ -33,6 +35,17 @@ export const AppHeader = () => {
               <Brightness7Icon htmlColor="#ffffff" />
             )}
           </IconButton>
+          {session && (
+            <IconButton
+              onClick={() => {
+                signOut();
+              }}
+            >
+              <ExitToAppIcon
+                htmlColor={themeMode === "light" ? "#ffffff" : undefined}
+              />
+            </IconButton>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

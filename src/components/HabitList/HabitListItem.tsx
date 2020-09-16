@@ -16,6 +16,7 @@ import DeleteHabitDialog from "../DeleteHabitDialog";
 
 interface Props {
   habit: Habit;
+  habitIndex: number;
   onDelete: (habit: SerializedHabit) => void;
   onEdit: (habit: SerializedHabit) => void;
   onLog: (log: HabitLog) => void;
@@ -24,6 +25,7 @@ interface Props {
 
 export const HabitListItem = ({
   habit,
+  habitIndex,
   onDelete,
   onEdit,
   onLog,
@@ -37,7 +39,8 @@ export const HabitListItem = ({
   const percentComplete = (habit.count / habit.goal) * 100;
   return (
     <Box
-      data-testid={habit.id}
+      data-testid={habit.name}
+      data-habit-index={habitIndex}
       display="flex"
       key={habit.id}
       alignItems="center"
@@ -62,7 +65,7 @@ export const HabitListItem = ({
       >
         <DeleteIcon fontSize="small" />
       </IconButton>
-      <Grid item container>
+      <Grid item container style={{ padding: 10 }}>
         <Grid item xs={12} data-testid="habit-name">
           {habit.name}
         </Grid>

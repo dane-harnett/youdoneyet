@@ -4,7 +4,7 @@ Feature: Day screen
     Given I have the following habits:
       | name             | goal | count |
       | Drink more water | 1    | 0     |
-    And I navigate to the day screen
+    And I am logged in
     When I log a record for "Drink more water"
     Then I see the following habit list:
       | name             | goal | count |
@@ -14,7 +14,7 @@ Feature: Day screen
     Given I have the following habits:
       | name             | goal | count |
       | Drink more water | 3    | 0     |
-    And I navigate to the day screen
+    And I am logged in
     When I log a record for "Drink more water"
     And I enter 2 for the count
     And I choose to log the count

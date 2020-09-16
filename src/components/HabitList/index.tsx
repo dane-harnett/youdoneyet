@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, QueryHookOptions } from "@apollo/client";
 import React, { useState } from "react";
 import { makeStyles, CircularProgress, Fab, Box } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,14 +11,51 @@ import HabitListItem from "./HabitListItem";
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
 import { SerializedHabit } from "../../types/SerializedHabit";
+import { SUMMARIES_QUERY } from "../SummaryList";
 
 export const HABITS_QUERY = gql`
-  query {
-    habits @client {
+  query($selectedDate: String) {
+    habits(selectedDate: $selectedDate) {
       id
       name
       goal
       count
+    }
+  }
+`;
+
+export const ADD_HABIT = gql`
+  mutation AddHabit($name: String, $goal: Int) {
+    addHabit(name: $name, goal: $goal) {
+      id
+      name
+      goal
+    }
+  }
+`;
+
+export const EDIT_HABIT = gql`
+  mutation EditHabit($id: Int, $name: String, $goal: Int) {
+    editHabit(id: $id, name: $name, goal: $goal) {
+      id
+      name
+      goal
+    }
+  }
+`;
+
+export const DELETE_HABIT = gql`
+  mutation DeleteHabit($id: Int) {
+    deleteHabit(id: $id)
+  }
+`;
+
+export const LOG_HABIT = gql`
+  mutation LogHabit($habitId: Int, $count: Int, $dateLogged: String) {
+    logHabit(habitId: $habitId, count: $count, dateLogged: $dateLogged) {
+      habitId
+      count
+      dateLogged
     }
   }
 `;
@@ -38,61 +75,52 @@ interface Props {
 }
 export const HabitList = ({ selectedDate }: Props) => {
   const fabClasses = useFabStyles();
-  const { data, loading } = useQuery(HABITS_QUERY, {
-    variables: { selectedDate },
-  });
-  const apolloClient = useApolloClient();
-
-  // refactor into a hook so we can stub in unit tests
-  // const [setHabitList] = useHabitList();
-
-  const setHabitList = (habitList: Array<Habit>) => {
-    window.localStorage.setItem("habits", JSON.stringify(habitList));
-    apolloClient.cache.evict({ fieldName: "habits" });
-    apolloClient.cache.evict({ fieldName: "summaries" });
+  const queryOptions: QueryHookOptions<any, { selectedDate: string }> = {
+    variables: { selectedDate: format(selectedDate, "yyyy-MM-dd") },
+    fetchPolicy: "cache-and-network",
   };
+  const { data, loading, error } = useQuery(HABITS_QUERY, queryOptions);
+  const mutationOptions = {
+    refetchQueries: [
+      {
+        query: HABITS_QUERY,
+        ...queryOptions,
+      },
+      {
+        query: SUMMARIES_QUERY,
+        fetchPolicy: "cache-and-network",
+      },
+    ],
+  };
+  const [addHabit] = useMutation(ADD_HABIT, mutationOptions);
+  const [editHabit] = useMutation(EDIT_HABIT, mutationOptions);
+  const [deleteHabit] = useMutation(DELETE_HABIT, mutationOptions);
+  const [logHabit] = useMutation(LOG_HABIT, mutationOptions);
 
-  const onCreate = (habit: SerializedHabit) => {
-    setHabitList(data.habits.concat([habit]));
+  const onCreate = (newHabit: SerializedHabit) => {
+    addHabit({
+      variables: newHabit,
+    });
   };
   const onEdit = (editedHabit: SerializedHabit) => {
-    const updatedHabits = data.habits.map((habit: Habit) => {
-      return editedHabit.id === habit.id ? editedHabit : habit;
+    editHabit({
+      variables: editedHabit,
     });
-    setHabitList(updatedHabits);
   };
   const onDelete = (deletedHabit: SerializedHabit) => {
-    const remainingHabits = data.habits.filter((habit: Habit) => {
-      return habit.id !== deletedHabit.id;
+    deleteHabit({
+      variables: deletedHabit,
     });
-    const habitLogs = JSON.parse(
-      window.localStorage.getItem("habit_logs") || "[]"
-    );
-    const remainingHabitLogs = habitLogs.filter((log: HabitLog) => {
-      return log.habitId !== deletedHabit.id;
-    });
-    window.localStorage.setItem(
-      "habit_logs",
-      JSON.stringify(remainingHabitLogs)
-    );
-    setHabitList(remainingHabits);
-    apolloClient.cache.evict({ fieldName: "summaries" });
   };
   const onLog = (log: HabitLog) => {
-    const habitLogs = JSON.parse(
-      window.localStorage.getItem("habit_logs") || "[]"
-    );
-    window.localStorage.setItem(
-      "habit_logs",
-      JSON.stringify(habitLogs.concat(log))
-    );
-    apolloClient.cache.evict({ fieldName: "habits" });
-    apolloClient.cache.evict({ fieldName: "summaries" });
+    logHabit({
+      variables: log,
+    });
   };
 
   const [open, setOpen] = useState(false);
 
-  return loading ? (
+  return loading || error ? (
     <div data-testid="loading">
       <CircularProgress />
     </div>
@@ -103,10 +131,11 @@ export const HabitList = ({ selectedDate }: Props) => {
       ) : (
         <>
           <Box px={1} data-testid="habit-list">
-            {data.habits.map((habit: Habit) => (
+            {data.habits.map((habit: Habit, habitIndex: number) => (
               <HabitListItem
                 key={`${format(selectedDate, "yyyy-MM-dd")}-${habit.id}`}
                 habit={habit}
+                habitIndex={habitIndex}
                 onLog={onLog}
                 onEdit={onEdit}
                 onDelete={onDelete}
