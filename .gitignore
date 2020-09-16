@@ -35,3 +35,8 @@ yarn-error.log*
 .vercel
 
 .vscode
+
+cypress/cucumber-json/
+cypress/screenshots/
+cypress/videos/
+cypress.env.json

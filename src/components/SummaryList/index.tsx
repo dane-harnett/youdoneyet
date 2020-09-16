@@ -8,7 +8,7 @@ import { Summary } from "../../types/Summary";
 
 export const SUMMARIES_QUERY = gql`
   query {
-    summaries @client {
+    summaries {
       id
       name
       goal
@@ -67,12 +67,13 @@ export const SummaryList = () => {
                   data-testid="records"
                   width="100%"
                 >
-                  {summary.records.map((record) =>
+                  {summary.records.map((record, index) =>
                     record.completed ? (
                       <CompletedIcon
                         key={record.date}
                         data-completed="Y"
                         data-testid="record-item"
+                        data-record-index={index}
                         color="primary"
                         fontSize="small"
                       />
@@ -81,6 +82,7 @@ export const SummaryList = () => {
                         key={record.date}
                         data-completed="N"
                         data-testid="record-item"
+                        data-record-index={index}
                         color="error"
                         fontSize="small"
                       />

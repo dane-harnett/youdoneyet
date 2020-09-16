@@ -1,8 +1,14 @@
 import { Given, Then, When } from "cypress-cucumber-preprocessor/steps";
 import { add, format, sub } from "date-fns";
 
+Given("I am logged in", () => {
+  cy.visit("/api/auth/signin");
+  cy.get("button").contains("Sign in with cypress-tests").click();
+});
+
 Given("I am yet to create any habits", () => {
   cy.clearLocalStorage();
+  cy.request("/api/tests/clear-all");
 });
 
 Given("I am yet to save my theme mode", () => {
@@ -11,10 +17,13 @@ Given("I am yet to save my theme mode", () => {
 
 Given("I have the following habits:", (dataTable) => {
   const habits = dataTable.rawTable.slice(1).map((line) => ({
-    id: line[0],
     name: line[0],
     goal: parseInt(line[1], 10),
   }));
+
+  cy.request("/api/tests/clear-all");
+  cy.request("POST", "/api/tests/create-habits", { habits });
+
   window.localStorage.setItem("habits", JSON.stringify(habits));
 });
 
@@ -64,14 +73,19 @@ Then("I see an empty summary list", () => {
 Then("I see the following habit list:", (dataTable) => {
   cy.get("[data-testid=habit-list]");
   const expectedHabits = dataTable.rawTable.slice(1);
-  cy.get("[data-testid=habit-list] > div").each((item, index) => {
-    cy.wrap(item).within(() => {
-      cy.get("[data-testid=habit-name]").contains(expectedHabits[index][0]);
-      cy.get("[data-testid=habit-goal]").contains(expectedHabits[index][1]);
-      cy.get("[data-testid=habit-count]").contains(
-        expectedHabits[index][2] || "0"
-      );
-    });
+  expectedHabits.forEach((habit, habitIndex) => {
+    cy.get(`[data-habit-index=${habitIndex}] [data-testid=habit-name]`).should(
+      "contain",
+      habit[0]
+    );
+    cy.get(`[data-habit-index=${habitIndex}] [data-testid=habit-goal]`).should(
+      "contain",
+      habit[1]
+    );
+    cy.get(`[data-habit-index=${habitIndex}] [data-testid=habit-count]`).should(
+      "contain",
+      habit[2] || "0"
+    );
   });
 });
 
@@ -204,7 +218,7 @@ When(
 
 Given(
   "I have completed {string} the following days {string}",
-  (habitId, records) => {
+  (habitName, records) => {
     const habitLogs = records
       .split("")
       .reverse()
@@ -214,7 +228,6 @@ Given(
         } else {
           return acc.concat([
             {
-              habitId,
               count: 1,
               dateLogged: format(
                 sub(new Date(), { days: index }),
@@ -224,6 +237,12 @@ Given(
           ]);
         }
       }, []);
+    cy.request("POST", "/api/tests/create-habit-logs", {
+      habit: {
+        name: habitName,
+      },
+      habitLogs,
+    });
     window.localStorage.setItem("habit_logs", JSON.stringify(habitLogs));
   }
 );
@@ -234,9 +253,12 @@ Then("I see the following summaries:", (dataTable) => {
     cy.get("[data-testid=habit-name]").contains(line[0]);
     const records = line[1].split("");
     cy.get("[data-testid=records]");
-    cy.get("[data-testid=record-item]").each((recordItem, index) => {
-      cy.log(index);
-      cy.wrap(recordItem).should("have.attr", "data-completed", records[index]);
+    records.forEach((recordItem, index) => {
+      cy.get(`[data-testid=record-item][data-record-index=${index}]`).should(
+        "have.attr",
+        "data-completed",
+        recordItem
+      );
     });
     cy.get("[data-testid=streak]").contains(`Streak: ${line[2]}`);
   });
@@ -245,6 +267,7 @@ Then("I see the following summaries:", (dataTable) => {
 Then("I see that I am in {string} mode", (themeMode) => {
   cy.get(`[data-theme-mode=${themeMode}]`);
 });
+
 When("I choose to change to {string} mode", (themeMode) => {
   cy.get(`[data-testid=theme-mode-toggle-button]`).click();
 });

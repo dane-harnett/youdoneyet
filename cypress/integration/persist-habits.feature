@@ -2,6 +2,7 @@ Feature: Day screen
 
   Scenario: Persist habits
     Given I am yet to create any habits
+    And I am logged in
     And I navigate to the day screen
     And I choose to create my first habit
     And I enter "Drink more water" for the name

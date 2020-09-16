@@ -4,6 +4,7 @@ Feature: Day screen
     Given I have the following habits:
       | name             | goal |
       | Drink more water | 2    |
+    And I am logged in
     And I navigate to the day screen
     When I choose to edit "Drink more water"
     And I enter "Hydrate" for the name

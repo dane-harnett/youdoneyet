@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, QueryHookOptions } from "@apollo/client";
 import React, { useState } from "react";
 import { makeStyles, CircularProgress, Fab, Box } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,6 +11,7 @@ import HabitListItem from "./HabitListItem";
 import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
 import { SerializedHabit } from "../../types/SerializedHabit";
+import { SUMMARIES_QUERY } from "../SummaryList";
 
 export const HABITS_QUERY = gql`
   query($selectedDate: String) {
@@ -34,7 +35,7 @@ export const ADD_HABIT = gql`
 `;
 
 export const EDIT_HABIT = gql`
-  mutation EditHabit($id: String, $name: String, $goal: Int) {
+  mutation EditHabit($id: Int, $name: String, $goal: Int) {
     editHabit(id: $id, name: $name, goal: $goal) {
       id
       name
@@ -44,13 +45,13 @@ export const EDIT_HABIT = gql`
 `;
 
 export const DELETE_HABIT = gql`
-  mutation DeleteHabit($id: String) {
+  mutation DeleteHabit($id: Int) {
     deleteHabit(id: $id)
   }
 `;
 
 export const LOG_HABIT = gql`
-  mutation LogHabit($habitId: String, $count: Int, $dateLogged: String) {
+  mutation LogHabit($habitId: Int, $count: Int, $dateLogged: String) {
     logHabit(habitId: $habitId, count: $count, dateLogged: $dateLogged) {
       habitId
       count
@@ -74,14 +75,20 @@ interface Props {
 }
 export const HabitList = ({ selectedDate }: Props) => {
   const fabClasses = useFabStyles();
-  const { data, loading } = useQuery(HABITS_QUERY, {
+  const queryOptions: QueryHookOptions<any, { selectedDate: string }> = {
     variables: { selectedDate: format(selectedDate, "yyyy-MM-dd") },
-  });
+    fetchPolicy: "cache-and-network",
+  };
+  const { data, loading, error } = useQuery(HABITS_QUERY, queryOptions);
   const mutationOptions = {
     refetchQueries: [
       {
         query: HABITS_QUERY,
-        variables: { selectedDate: format(selectedDate, "yyyy-MM-dd") },
+        ...queryOptions,
+      },
+      {
+        query: SUMMARIES_QUERY,
+        fetchPolicy: "cache-and-network",
       },
     ],
   };
@@ -113,7 +120,7 @@ export const HabitList = ({ selectedDate }: Props) => {
 
   const [open, setOpen] = useState(false);
 
-  return loading ? (
+  return loading || error ? (
     <div data-testid="loading">
       <CircularProgress />
     </div>
@@ -124,10 +131,11 @@ export const HabitList = ({ selectedDate }: Props) => {
       ) : (
         <>
           <Box px={1} data-testid="habit-list">
-            {data.habits.map((habit: Habit) => (
+            {data.habits.map((habit: Habit, habitIndex: number) => (
               <HabitListItem
                 key={`${format(selectedDate, "yyyy-MM-dd")}-${habit.id}`}
                 habit={habit}
+                habitIndex={habitIndex}
                 onLog={onLog}
                 onEdit={onEdit}
                 onDelete={onDelete}

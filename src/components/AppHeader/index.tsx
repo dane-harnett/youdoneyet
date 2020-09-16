@@ -8,11 +8,11 @@ import Brightness7Icon from "@material-ui/icons/Brightness7";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ThemeModeContext from "../../context/ThemeModeContext";
 
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 export const AppHeader = () => {
   const { themeMode, setThemeMode } = useContext(ThemeModeContext);
   const [session, loading] = useSession();
-
+  if (loading) return null;
   return (
     <AppBar data-testid="app-header" position="static">
       <Toolbar>

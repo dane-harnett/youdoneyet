@@ -1,134 +1,17 @@
-import {
-  ApolloServer,
-  AuthenticationError,
-  ForbiddenError,
-  gql,
-} from "apollo-server-micro";
+import { ApolloServer, AuthenticationError, gql } from "apollo-server-micro";
 import Cors from "micro-cors";
-import { v4 as uuidv4 } from "uuid";
+import { PrismaClient } from "@prisma/client";
 import { getSession } from "next-auth/client";
 
-interface Habit {
-  id: string;
-  name: string;
-  goal: number;
-  userId: string;
-}
-type HabitList = Habit[];
+import generateHabitsModel from "../../src/models/generateHabitsModel";
+import { HabitsModel } from "../../src/types/HabitsModel";
 
-let habits: HabitList = [];
-
-interface HabitLog {
-  habitId: string;
-  dateLogged: string;
-  count: number;
-}
-type HabitLogList = HabitLog[];
-
-let habitLogs: HabitLogList = [];
-
-interface NewHabit {
-  name: string;
-  goal: number;
-}
-interface EditedHabit {
-  id: string;
-  name: string;
-  goal: number;
-}
-
-const generateHabitsModel = ({ user }: { user: User }) => ({
-  getHabits: (selectedDate: string) => {
-    const currentUsersHabits = habits.filter(
-      (habit) => habit.userId === user.id
-    );
-    const habitLogsForSelectedDate = habitLogs.filter(
-      (log) => log.dateLogged === selectedDate
-    );
-    return currentUsersHabits.map((habit) => {
-      return {
-        ...habit,
-        count: habitLogsForSelectedDate
-          .filter((log) => log.habitId === habit.id)
-          .reduce((sum: number, log) => sum + log.count, 0),
-      };
-    });
-  },
-  add: (habit: NewHabit) => {
-    const newHabit = {
-      ...habit,
-      id: uuidv4(),
-      userId: user.id,
-    };
-    habits.push(newHabit);
-    return newHabit;
-  },
-  edit: (editedHabit: EditedHabit) => {
-    const habitToEdit = habits.find(
-      (habit) => habit.id === editedHabit.id && habit.userId === user.id
-    );
-
-    if (!habitToEdit) {
-      throw new ForbiddenError("Not authorized");
-    }
-
-    habits = habits.map((habit) => {
-      if (habit.id !== editedHabit.id) {
-        return habit;
-      }
-      return {
-        ...editedHabit,
-        userId: user.id,
-      };
-    });
-    return {
-      ...editedHabit,
-      userId: user.id,
-    };
-  },
-  delete: (id: string) => {
-    const habitToDelete = habits.find(
-      (habit) => habit.id === id && habit.userId === user.id
-    );
-
-    if (!habitToDelete) {
-      throw new ForbiddenError("Not authorized");
-    }
-
-    habits = habits.filter((habit) => habit.id !== id);
-    return true;
-  },
-  log: (log: HabitLog) => {
-    const habitToLog = habits.find(
-      (habit) => habit.id === log.habitId && habit.userId === user.id
-    );
-
-    if (!habitToLog) {
-      throw new ForbiddenError("Not authorized");
-    }
-
-    habitLogs.push(log);
-    return log;
-  },
-});
-
-interface DailyHabit extends Habit {
-  count: number;
-}
+const prisma = new PrismaClient();
 
 interface User {
-  id: string;
   name: string;
   email: string;
   image: string;
-}
-
-interface HabitsModel {
-  getHabits(selectedDate: string): DailyHabit[];
-  add(habit: NewHabit): Habit;
-  edit(habit: EditedHabit): Habit;
-  delete(id: string): boolean;
-  log(log: HabitLog): HabitLog;
 }
 
 interface Context {
@@ -146,7 +29,7 @@ const typeDefs = gql`
   }
 
   type Habit {
-    id: String
+    id: Int
     name: String
     goal: Int
     count: Int
@@ -158,15 +41,29 @@ const typeDefs = gql`
     dateLogged: String
   }
 
+  type SummaryRecord {
+    date: String
+    completed: Boolean
+  }
+
+  type Summary {
+    id: Int
+    name: String
+    goal: Int
+    streak: Int
+    records: [SummaryRecord]
+  }
+
   type Query {
     habits(selectedDate: String): [Habit]
+    summaries: [Summary]
   }
 
   type Mutation {
     addHabit(name: String, goal: Int): HabitDetails
-    editHabit(id: String, name: String, goal: Int): HabitDetails
-    deleteHabit(id: String): Boolean
-    logHabit(habitId: String, count: Int, dateLogged: String): HabitLog
+    editHabit(id: Int, name: String, goal: Int): HabitDetails
+    deleteHabit(id: Int): Boolean
+    logHabit(habitId: Int, count: Int, dateLogged: String): HabitLog
   }
 `;
 
@@ -178,6 +75,9 @@ const resolvers = {
       context: Context
     ) => {
       return context.models.habits.getHabits(args.selectedDate);
+    },
+    summaries: (_parent: any, _args: {}, context: Context) => {
+      return context.models.habits.getSummaries();
     },
   },
   Mutation: {
@@ -191,7 +91,7 @@ const resolvers = {
     editHabit: (
       _parent: any,
       args: {
-        id: string;
+        id: number;
         name: string;
         goal: number;
       },
@@ -203,13 +103,13 @@ const resolvers = {
         goal: args.goal,
       });
     },
-    deleteHabit: (_parent: any, args: { id: string }, context: Context) => {
+    deleteHabit: (_parent: any, args: { id: number }, context: Context) => {
       return context.models.habits.delete(args.id);
     },
     logHabit: (
       _parent: any,
       args: {
-        habitId: string;
+        habitId: number;
         count: number;
         dateLogged: string;
       },
@@ -234,7 +134,7 @@ const apolloServer = new ApolloServer({
       throw new AuthenticationError("You must be logged in");
     }
 
-    const habits = generateHabitsModel({ user: session.user });
+    const habits = generateHabitsModel({ user: session.user, prisma });
 
     return {
       user: session?.user,
