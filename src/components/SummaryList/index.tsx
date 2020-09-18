@@ -5,6 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import CompletedIcon from "@material-ui/icons/SentimentVerySatisfiedRounded";
 import NotCompletedIcon from "@material-ui/icons/SentimentVeryDissatisfiedRounded";
 import { Summary } from "../../types/Summary";
+import Loading from "../Loading";
 
 export const SUMMARIES_QUERY = gql`
   query {
@@ -26,9 +27,7 @@ export const SummaryList = () => {
   const { data, loading } = useQuery(SUMMARIES_QUERY);
 
   return loading ? (
-    <div data-testid="loading">
-      <CircularProgress />
-    </div>
+    <Loading />
   ) : (
     <>
       {data.summaries.length === 0 ? (
