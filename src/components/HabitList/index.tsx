@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery, QueryHookOptions } from "@apollo/client";
 import React, { useState } from "react";
-import { makeStyles, CircularProgress, Fab, Box } from "@material-ui/core";
+import { makeStyles, Fab, Box } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { format } from "date-fns";
 
@@ -12,6 +12,7 @@ import { Habit } from "../../types/Habit";
 import { HabitLog } from "../../types/HabitLog";
 import { SerializedHabit } from "../../types/SerializedHabit";
 import { SUMMARIES_QUERY } from "../SummaryList";
+import Loading from "../Loading";
 
 export const HABITS_QUERY = gql`
   query($selectedDate: String) {
@@ -121,9 +122,7 @@ export const HabitList = ({ selectedDate }: Props) => {
   const [open, setOpen] = useState(false);
 
   return loading || error ? (
-    <div data-testid="loading">
-      <CircularProgress />
-    </div>
+    <Loading />
   ) : (
     <>
       {data.habits.length === 0 ? (

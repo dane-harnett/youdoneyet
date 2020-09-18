@@ -5,12 +5,16 @@ import NavigationTabs from "../NavigationTabs";
 import SelectedDate from "../SelectedDate";
 import HabitList from "../HabitList";
 import { signIn, useSession } from "next-auth/client";
+import Loading from "../Loading";
 
 export const DayScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [session, loading] = useSession();
 
-  if (loading) return null;
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div data-testid="day-screen">
       <AppHeader />
