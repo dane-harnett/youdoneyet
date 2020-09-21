@@ -4,8 +4,9 @@ import AppHeader from "../AppHeader";
 import NavigationTabs from "../NavigationTabs";
 import SelectedDate from "../SelectedDate";
 import HabitList from "../HabitList";
-import { signIn, useSession } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import Loading from "../Loading";
+import SignIn from "../SignIn";
 
 export const DayScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -19,16 +20,7 @@ export const DayScreen = () => {
     <div data-testid="day-screen">
       <AppHeader />
       {!session ? (
-        <>
-          Not signed in <br />
-          <button
-            onClick={() => {
-              signIn("auth0");
-            }}
-          >
-            Sign in
-          </button>
-        </>
+        <SignIn />
       ) : (
         <>
           <NavigationTabs value={0} />

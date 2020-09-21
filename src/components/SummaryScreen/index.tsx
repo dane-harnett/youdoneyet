@@ -1,9 +1,10 @@
 import React from "react";
+import { useSession } from "next-auth/client";
 import AppHeader from "../AppHeader";
 import NavigationTabs from "../NavigationTabs";
 import SummaryList from "../SummaryList";
 import Loading from "../Loading";
-import { signIn, useSession } from "next-auth/client";
+import SignIn from "../SignIn";
 
 export const SummaryScreen = () => {
   const [session, loading] = useSession();
@@ -16,16 +17,7 @@ export const SummaryScreen = () => {
     <div data-testid="summary-screen">
       <AppHeader />
       {!session ? (
-        <>
-          Not signed in <br />
-          <button
-            onClick={() => {
-              signIn("auth0");
-            }}
-          >
-            Sign in
-          </button>
-        </>
+        <SignIn />
       ) : (
         <>
           <NavigationTabs value={1} />
