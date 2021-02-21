@@ -1,13 +1,17 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 
-const providers = [
-  Providers.Auth0({
-    clientId: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    domain: process.env.AUTH0_DOMAIN,
-  }),
-];
+const providers = [];
+
+if (process.env.AUTH0_CREDENTIALS === "ENABLED") {
+  providers.push([
+    Providers.Auth0({
+      clientId: process.env.AUTH0_CLIENT_ID,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      domain: process.env.AUTH0_DOMAIN,
+    }),
+  ]);
+}
 
 if (process.env.CYPRESS_CREDENTIALS === "ENABLED") {
   providers.push(
